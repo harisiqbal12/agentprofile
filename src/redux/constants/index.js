@@ -1,0 +1,2 @@
+export const USER_STATE_CHANGED = 'USER_STATE_CHANGED';
+export const ADDED_AGENTS = 'ADDED_AGENTS';
