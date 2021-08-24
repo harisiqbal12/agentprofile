@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import firebase from 'firebase';
 
 import LandingNavigation from './Landing/Landing';
-import HomeNavigation from './Homescreen/HomeNavigation';
+import AppNavigation from './Homescreen/AppNavigator';
 import Loader from '../components/Loader';
 
 function Navigation() {
@@ -29,7 +29,7 @@ function Navigation() {
 
 	return (
 		<NavigationContainer>
-			{loggedIn ? <HomeNavigation /> : <LandingNavigation />}
+			{loggedIn ? <AppNavigation /> : <LandingNavigation />}
 		</NavigationContainer>
 	);
 }

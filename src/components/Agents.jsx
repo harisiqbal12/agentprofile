@@ -1,6 +1,12 @@
 import React from 'react';
-import { Layout, Text } from '@ui-kitten/components';
-import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
+import { Searchbar } from 'react-native-paper';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	FlatList,
+	TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 import AgentCard from './AgentCard';
 
@@ -8,13 +14,32 @@ function Agents(props) {
 	const { currentAgent } = props;
 	console.log(StatusBar.currentHeight);
 
+	const handleListingPropertiessNavigaiton = () =>
+		props.navigation.navigate('ListingProperties', {
+			properties: 'haris',
+		});
+
 	return (
 		<SafeAreaView style={styles.agentContainer}>
+			<Searchbar
+				theme={{ colors: { primary: '#EA723D' } }}
+				style={styles.searchBar}
+				placeholder='search'
+			/>
 			<FlatList
+				contentContainerStyle={{
+					padding: 16,
+				}}
+				style={styles.flatList}
 				data={currentAgent}
 				renderItem={({ item }) => {
-					return <AgentCard item={item} />;
+					return (
+						<TouchableOpacity onPress={handleListingPropertiessNavigaiton}>
+							<AgentCard item={item} />
+						</TouchableOpacity>
+					);
 				}}
+				keyExtractor={item => item.id}
 			/>
 		</SafeAreaView>
 	);
@@ -24,6 +49,12 @@ const styles = StyleSheet.create({
 	agentContainer: {
 		flex: 1,
 		marginTop: StatusBar.currentHeight,
+	},
+	flatList: {
+		flex: 1,
+	},
+	searchBar: {
+		margin: 16,
 	},
 });
 

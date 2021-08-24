@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Text } from '@ui-kitten/components';
-import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	FlatList,
+	TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import HomescreenCard from './HomescreenCard';
@@ -18,6 +24,11 @@ function Homescreen(props) {
 		}
 	}, [currentAgent]);
 
+	const handleAgentDetailsNavigation = data =>
+		props.navigation.navigate('AgentDetails', {
+			data,
+		});
+
 	if (loading) {
 		return <Loader />;
 	}
@@ -31,8 +42,13 @@ function Homescreen(props) {
 				contentContainerStyle={{ padding: 16 }}
 				data={currentAgent}
 				renderItem={({ item }) => {
+					console.log('itemsss');
 					console.log(item.email);
-					return <HomescreenCard item={item} />;
+					return (
+						<TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
+							<HomescreenCard item={item} />
+						</TouchableOpacity>
+					);
 				}}
 				keyExtractor={item => item.id}
 			/>

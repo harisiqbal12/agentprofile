@@ -1,5 +1,11 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	ScrollView,
+	TouchableOpacity,
+} from 'react-native';
 import { Text, Layout, Avatar, Icon, Button, Card } from '@ui-kitten/components';
 import { connect } from 'react-redux';
 
@@ -31,57 +37,85 @@ function Settings(props) {
 				</Layout>
 
 				<Layout style={styles.userInforContainer}>
-					<Card
-						onPress={handleCardPress}
-						style={styles.cardProfile}
-						status='primary'>
-						<Icon name='people' fill='#fff' style={styles.cardIcon} />
-						<Text style={styles.cardTitle}>Profile</Text>
-					</Card>
-					<Card
-						onPress={handleCardPress}
-						style={styles.cardProfile}
-						status='primary'>
-						<Icon name='pie-chart' fill='#fff' style={styles.cardIcon} />
-						<Text style={{ ...styles.cardTitle, fontSize: 12 }}>
-							My Properties
-						</Text>
-					</Card>
-					<Card
-						onPress={handleCardPress}
-						style={styles.cardProfile}
-						status='primary'>
-						<Icon name='heart' fill='#fff' style={styles.cardIcon} />
-						<Text style={styles.cardTitle}>Favourites</Text>
-					</Card>
-					<Card
-						onPress={handleCardPress}
-						style={styles.cardProfile}
-						status='primary'>
-						<Icon name='email' fill='#fff' style={styles.cardIcon} />
-						<Text style={styles.cardTitle}>Contact</Text>
-					</Card>
-					<Card onPress={onLogout} style={styles.cardProfile} status='primary'>
-						<Icon name='power' fill='#fff' style={styles.cardIcon} />
-						<Text style={styles.cardTitle}>Logout</Text>
-					</Card>
-					<Card
-						onPress={handleCardPress}
-						style={styles.cardProfile}
-						status='primary'>
-						<Icon
-							name='question-mark-circle'
-							fill='#fff'
-							style={styles.cardIcon}
-						/>
-						<Text style={styles.cardTitle}>Support</Text>
+					<Card style={styles.cardProfile} status='primary'>
+						<TouchableOpacity>
+							<Icon name='people' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Profile</Text>
+						</TouchableOpacity>
 					</Card>
 
-					<Text style={{ ...styles.copyright, marginTop: 50 }}>
-						All Rights Reserved 2020
-					</Text>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon name='pie-chart' fill='#fff' style={styles.cardIcon} />
+							<Text style={{ ...styles.cardTitle, fontSize: 12 }}>
+								My Properties
+							</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon name='person' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Agent</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon name='heart' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Favourites</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon name='email' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Contact</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card style={styles.cardProfile} status='primary'>
+						<TouchableOpacity onPress={onLogout}>
+							<Icon name='power' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Logout</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon name='phone-call' fill='#fff' style={styles.cardIcon} />
+							<Text style={styles.cardTitle}>Support</Text>
+						</TouchableOpacity>
+					</Card>
+					<Card
+						onPress={handleCardPress}
+						style={styles.cardProfile}
+						status='primary'>
+						<TouchableOpacity>
+							<Icon
+								name='question-mark-circle'
+								fill='#fff'
+								style={styles.cardIcon}
+							/>
+							<Text style={styles.cardTitle}>About us</Text>
+						</TouchableOpacity>
+					</Card>
+					<Layout>
+						<Text style={{ ...styles.copyright, marginTop: 50 }}>
+							All Rights Reserved 2020
+						</Text>
+					</Layout>
 				</Layout>
-				<Layout></Layout>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -135,6 +169,7 @@ const styles = StyleSheet.create({
 		borderTopColor: '#fff',
 		margin: 10,
 		backgroundColor: '#EA723D',
+		borderRadius: 10,
 	},
 	cardTitle: {
 		textAlign: 'center',

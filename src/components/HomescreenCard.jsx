@@ -1,23 +1,21 @@
 import React, { useEffect } from 'react';
 import { Layout, Text, Avatar, Icon } from '@ui-kitten/components';
-import { StyleSheet, ImageBackground } from 'react-native';
+import { StyleSheet  } from 'react-native';
 import { Card, Title, Avatar as PaperAvatar } from 'react-native-paper';
-
-const LeftContent = props => (
-	<Icon {...props} style={styles.cardIcon} fill='#8F9BB3' name='heart' />
-);
 
 function HomescreenCard({ item }) {
 	const { displayName, mobile, listedProperties } = item;
 
 	return (
-		<Card style={styles.agentsCard}>
+		<Card elevation={5} style={styles.agentsCard}>
+			<Icon style={styles.cardIcon} fill='#8F9BB3' name='heart' />
+
 			<Card.Title
 				style={styles.cardHeaderTitle}
 				title={displayName}
 				subtitle={mobile}
-				right={LeftContent}
 			/>
+
 			<Card.Cover source={require('../../assets/background-image-1.jpg')} />
 			<Layout style={styles.avatarContainer}>
 				<Avatar
@@ -74,10 +72,17 @@ const styles = StyleSheet.create({
 	},
 	cardHeaderTitle: {
 		width: 350,
+		fontWeight: 'bold',
+		color: '#737d90',
+		fontFamily: 'Roboto_400Regular',
 	},
 	cardIcon: {
 		height: 25,
 		width: 25,
+		zIndex: 9,
+		position: 'absolute',
+		right: 10,
+		top: 10,
 	},
 });
 
