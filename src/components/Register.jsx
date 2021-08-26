@@ -25,14 +25,6 @@ function Register() {
 				email: email,
 				displayName: name,
 				photourl: '',
-				bioGraphicalInformation: '',
-				mobileNumber: '',
-				officeNumber: '',
-				faxNumber: '',
-				facebookUrl: '',
-				twitterUrl: '',
-				googlePlusUrl: '',
-				linkedInUrl: '',
 			});
 
 			setName(' ');

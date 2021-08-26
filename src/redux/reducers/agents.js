@@ -1,7 +1,8 @@
-import { ADDED_AGENTS } from '../constants';
+import { ADDED_AGENTS, CURRENT_AGENT } from '../constants';
 
 const INITIAL_STATE = {
 	agents: [],
+  currentAgent: null
 };
 
 const agentReducer = (state = INITIAL_STATE, action) => {
@@ -11,6 +12,12 @@ const agentReducer = (state = INITIAL_STATE, action) => {
         ...state,
         agents: action.agents
       }
+
+      case CURRENT_AGENT:
+        return {
+          ...state,
+          currentAgent: action.currentAgent
+        }
 
 		default:
 			return state;

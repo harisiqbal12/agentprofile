@@ -1,4 +1,8 @@
-import { USER_STATE_CHANGED, ADDED_AGENTS } from '../constants/index';
+import {
+	USER_STATE_CHANGED,
+	ADDED_AGENTS,
+	CURRENT_AGENT,
+} from '../constants/index';
 import firebase from 'firebase';
 
 export function fetchUser() {
@@ -34,6 +38,27 @@ export function fetchAgents() {
 				data.push(agents);
 
 				dispatch({ type: ADDED_AGENTS, agents: data });
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchCurrentAgent() {
+	return async dispatch => {
+		try {
+			const currentUser = await firebase.auth().currentUser;
+			const agentsRef = await firebase.database().ref('agents');
+			console.log(currentUser.uid);
+			agentsRef.on('child_added', snapshot => {
+				// console.log(snapshot.key);
+				console.log('snapp keys');
+				if (snapshot.key.includes(currentUser.uid)) {
+					console.log('truee');
+					dispatch({ type: CURRENT_AGENT, currentAgent: snapshot.val() });
+					return;
+				}
 			});
 		} catch (err) {
 			console.log(err);

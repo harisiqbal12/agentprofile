@@ -12,7 +12,9 @@ const image = { uri: 'https://reactjs.org/logo-og.png' };
 function AgentDetails(props) {
 	const { about, office, displayName, mobile, email, listedProperties } =
 		props.route.params.data;
-	console.log(props);
+	// console.log(props);
+
+	// console.log(displayName.split(' '));
 
 	return (
 		<SafeAreaView style={styles.agentDetails}>
@@ -33,16 +35,25 @@ function AgentDetails(props) {
 						<Text style={styles.agentName}>{displayName}</Text>
 						<Layout style={styles.workDetails}>
 							<Icon name='briefcase' fill='#8F9BB3' style={styles.basicIcon} />
-							<Text style={styles.basicFontStyling}>{office}</Text>
+							<Text style={styles.basicFontStyling}>
+								{' '}
+								<Text style={styles.nestedFontStyling}>Office</Text> {office}
+							</Text>
 							<Icon name='smartphone' fill='#8F9BB3' style={styles.basicIcon} />
-							<Text style={styles.basicFontStyling}>{mobile}</Text>
+							<Text style={styles.basicFontStyling}>
+								<Text style={styles.nestedFontStyling}>Mobile</Text> {mobile}
+							</Text>
 							<Icon name='email' fill='#8F9BB3' style={styles.basicIcon} />
-							<Text style={styles.basicFontStyling}>{email}</Text>
+							<Text style={styles.basicFontStyling}>
+								<Text style={styles.nestedFontStyling}>Email</Text> {email}
+							</Text>
 							<Text style={styles.listedProperties}>Listed Properties</Text>
 							<Text style={styles.listedProperty}>{listedProperties}</Text>
 						</Layout>
 						<Layout style={styles.aboutAgent}>
-							<Text style={styles.aboutHeading}>About Agent</Text>
+							<Text style={styles.aboutHeading}>
+								About {displayName.split(' ')[0]}
+							</Text>
 							<Text style={styles.aboutParagraph}>{about}</Text>
 						</Layout>
 					</Layout>
@@ -93,10 +104,7 @@ const styles = StyleSheet.create({
 	agentContent: {
 		flex: 1,
 		marginTop: -30,
-		borderWidth: 2,
-		borderColor: '#8F9BB3',
 		borderRadius: 10,
-		borderBottomEndRadius: 5,
 	},
 	agentName: {
 		fontSize: 25,
@@ -121,6 +129,15 @@ const styles = StyleSheet.create({
 	basicFontStyling: {
 		fontWeight: 'bold',
 		color: '#737d90',
+		fontFamily: 'Roboto_400Regular',
+		textAlign: 'center',
+		left: 40,
+		bottom: 19,
+		fontSize: 12,
+	},
+	nestedFontStyling: {
+		fontWeight: 'bold',
+		color: '#8F9BB3',
 		fontFamily: 'Roboto_400Regular',
 		textAlign: 'center',
 		left: 40,

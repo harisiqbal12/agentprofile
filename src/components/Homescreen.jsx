@@ -17,9 +17,9 @@ function Homescreen(props) {
 	const { currentAgent } = props;
 
 	useEffect(() => {
-		console.log('current agent: ' + currentAgent.length);
+		// console.log('current agent: ' + currentAgent.length);
 		if (currentAgent.length > 0) {
-			console.log('truee');
+			// console.log('truee');
 			setLoading(false);
 		}
 	}, [currentAgent]);

@@ -4,18 +4,23 @@ import { bindActionCreators } from 'redux';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Icon } from '@ui-kitten/components';
 
-import { fetchUser, fetchAgents } from '../../redux/actions/index';
+import {
+	fetchUser,
+	fetchAgents,
+	fetchCurrentAgent,
+} from '../../redux/actions/index';
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
 import Settings from '../../components/Settings';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function HomeNavigation({ fetchUser, fetchAgents }) {
+function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 	useEffect(() => {
 		fetchUser();
 		fetchAgents();
-		console.log('fetch agents')
+		fetchCurrentAgent();
+		console.log('fetch agents');
 	}, []);
 
 	return (
@@ -63,6 +68,6 @@ function HomeNavigation({ fetchUser, fetchAgents }) {
 }
 
 const mapDispatchtoProps = dispatch =>
-	bindActionCreators({ fetchUser, fetchAgents }, dispatch);
+	bindActionCreators({ fetchUser, fetchAgents, fetchCurrentAgent }, dispatch);
 
 export default connect(null, mapDispatchtoProps)(HomeNavigation);

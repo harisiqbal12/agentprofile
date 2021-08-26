@@ -12,7 +12,8 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 
 function Settings(props) {
-	const { currentUser } = props;
+	const { currentUser, currentAgent } = props;
+	console.log(currentAgent);
 
 	const handleCardPress = async () => {
 		console.log('pressing');
@@ -23,6 +24,16 @@ function Settings(props) {
 		console.log('logging out');
 		await firebase.auth().signOut();
 	};
+
+	const hanldeProfileNavigate = () =>
+		props.navigation.navigate('Profile', {
+			currentUser,
+		});
+
+	const handleAgentProfileNavigation = () =>
+		props.navigation.navigate('AgentProfile', {
+			currentAgent,
+		});
 
 	return (
 		<SafeAreaView style={styles.settingContainer}>
@@ -38,7 +49,7 @@ function Settings(props) {
 
 				<Layout style={styles.userInforContainer}>
 					<Card style={styles.cardProfile} status='primary'>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={hanldeProfileNavigate}>
 							<Icon name='people' fill='#fff' style={styles.cardIcon} />
 							<Text style={styles.cardTitle}>Profile</Text>
 						</TouchableOpacity>
@@ -59,7 +70,7 @@ function Settings(props) {
 						onPress={handleCardPress}
 						style={styles.cardProfile}
 						status='primary'>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={handleAgentProfileNavigation}>
 							<Icon name='person' fill='#fff' style={styles.cardIcon} />
 							<Text style={styles.cardTitle}>Agent</Text>
 						</TouchableOpacity>
@@ -191,6 +202,7 @@ const styles = StyleSheet.create({
 
 mapStateToProps = store => ({
 	currentUser: store.userState.currentUser,
+	currentAgent: store.agentState.currentAgent,
 });
 
 export default connect(mapStateToProps)(Settings);
