@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Input, Layout, Button } from '@ui-kitten/components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as ImagePicker from 'expo-image-picker';
 import {
 	SafeAreaView,
 	StyleSheet,
@@ -9,20 +10,28 @@ import {
 	Image,
 	ScrollView,
 } from 'react-native';
-import firebase from 'firebase';
+
 import { fetchAgents } from '../redux/actions/index';
+import firebase from 'firebase';
+import 'firebase/firebase-storage';
 
 function AgentProfile(props) {
 	const { currentAgent } = props.route.params;
 
+	const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
 	const [displayName, setDisplayName] = useState('');
 	const [email, setEmail] = useState('');
 	const [mobile, setMobile] = useState('');
 	const [office, setOffice] = useState('');
 	const [whatsApp, setWhatsapp] = useState('');
 	const [about, setAbout] = useState('');
+	const [image, setImage] = useState(null);
+	const [profileURL, setProfileURL] = useState(
+		'https://firebasestorage.googleapis.com/v0/b/agentprofile-e89e2.appspot.com/o/data%2FMen-Profile-Image.png?alt=media&token=e67c9e7b-e9b4-46cc-b7b6-e78e86f68851'
+	);
 
 	useEffect(() => {
+		console.log(currentAgent);
 		if (currentAgent) {
 			setDisplayName(currentAgent.displayName);
 			setEmail(currentAgent.email);
@@ -30,15 +39,31 @@ function AgentProfile(props) {
 			setOffice(currentAgent.office);
 			setWhatsapp(currentAgent.whatsApp);
 			setAbout(currentAgent.about);
+			setProfileURL(currentAgent.profileURL);
 		}
+
+		(async () => {
+			try {
+				const galleryStatus =
+					await ImagePicker.requestMediaLibraryPermissionsAsync();
+				setHasGalleryPermission(galleryStatus.status === 'granted');
+			} catch (err) {}
+		})();
 	}, []);
 
-	const handleSaveButton = async () => {
+	const handleSaveButton = async profiileImageURL => {
 		const currentUser = firebase.auth().currentUser;
 		const agentsRef = firebase.database().ref('agents');
 
 		try {
 			if (!currentAgent) {
+				const randomNumber = Math.floor(Math.random() * 23 + 1);
+				const bgImageUrl = await firebase
+					.storage()
+					.ref()
+					.child(`/app-images/${randomNumber}.jpg`)
+					.getDownloadURL();
+
 				// create new
 				await agentsRef.child(currentUser.uid).set({
 					displayName,
@@ -47,9 +72,11 @@ function AgentProfile(props) {
 					office,
 					whatsApp,
 					about,
+					bgImageUrl,
+					profileURL: profiileImageURL,
 				});
 
-				console.log('create done')
+				console.log('create done');
 				return;
 			}
 
@@ -60,7 +87,11 @@ function AgentProfile(props) {
 				office,
 				whatsApp,
 				about,
+				profileURL: profiileImageURL,
 			});
+
+			console.log('\n\n\nreading from state*******');
+			console.log(profiileImageURL);
 
 			console.log('update done');
 			props.fetchAgents();
@@ -69,15 +100,91 @@ function AgentProfile(props) {
 		}
 	};
 
+	const loadGallery = async () => {
+		try {
+			console.log('loading image gallery');
+			const result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [1, 1],
+				quality: 0.4,
+			});
+
+			console.log(result);
+
+			if (!result.cancelled) {
+				setImage(result.uri);
+				setProfileURL(result.uri)
+				console.log(result.uri);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const taskError = snapshot => {
+		console.log(snapshot);
+	};
+
+	const taskProgress = snapshot => {
+		console.log(`transferred: ${snapshot.bytesTransferred}`);
+	};
+
+	const handleUploadImage = async () => {
+		try {
+			if (image) {
+				const response = await fetch(image);
+				const blob = await response.blob();
+				const task = firebase
+					.storage()
+					.ref()
+					.child(
+						`profile/${firebase.auth().currentUser.uid}/${Math.random().toString(
+							36
+						)}`
+					)
+					.put(blob);
+
+				const taskCompleted = () => {
+					task.snapshot.ref.getDownloadURL().then(snapshot => {
+						handleSaveButton(snapshot);
+						console.log(snapshot);
+						console.log('transfered completed');
+					});
+				};
+
+				task.on('state_changed', taskProgress, taskError, taskCompleted);
+				console.log('image uploaded to firestorage');
+			} else {
+				handleSaveButton();
+			}
+		} catch (err) {
+			console.log('error encounted');
+			console.log(err);
+		}
+	};
+
+	if (hasGalleryPermission === null) {
+		return <Layout />;
+	}
+
+	if (!hasGalleryPermission) {
+		return <Text>Please provide Gallery Permission</Text>;
+	}
+
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<ScrollView style={styles.ScrollView}>
 				<Layout style={styles.contentContainer}>
 					<Image
 						style={styles.imageCover}
-						source={require('../../assets/profile-image.jpg')}
+						source={{
+							uri: profileURL,
+						}}
 					/>
-					<Button style={styles.btnSave}>Upload Image</Button>
+					<Button onPress={loadGallery} style={styles.btnSave}>
+						Upload Image
+					</Button>
 					<Input
 						value={displayName}
 						style={styles.input}
@@ -122,7 +229,7 @@ function AgentProfile(props) {
 						value={about}
 						onChangeText={t => setAbout(t)}
 					/>
-					<Button onPress={handleSaveButton} style={styles.btnSave}>
+					<Button onPress={handleUploadImage} style={styles.btnSave}>
 						Save
 					</Button>
 				</Layout>
@@ -151,17 +258,22 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	imageCover: {
-		aspectRatio: 1 / 1,
-		backgroundColor: 'transparent',
-		borderWidth: 5,
-		borderColor: '#CDCBCD',
+		width: 150,
+		height: 150,
+		borderWidth: 4,
+		borderColor: '#EA723D',
 		marginTop: 20,
-		maxHeight: 150,
-		marginBottom: 30,
 	},
 	ScrollView: {
 		flex: 1,
 		marginTop: StatusBar.currentHeight,
+	},
+	backgroundImage: {
+		zIndex: -1,
+		aspectRatio: 16 / 9,
+		height: 200,
+		position: 'relative',
+		top: 200,
 	},
 });
 

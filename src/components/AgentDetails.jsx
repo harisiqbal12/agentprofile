@@ -7,11 +7,18 @@ import {
 	Image,
 } from 'react-native';
 import { Layout, Text, Avatar, Icon, Button } from '@ui-kitten/components';
-const image = { uri: 'https://reactjs.org/logo-og.png' };
 
 function AgentDetails(props) {
-	const { about, office, displayName, mobile, email, listedProperties } =
-		props.route.params.data;
+	const {
+		about,
+		office,
+		displayName,
+		mobile,
+		email,
+		listedProperties,
+		bgImageUrl,
+		profileURL,
+	} = props.route.params.data;
 	// console.log(props);
 
 	// console.log(displayName.split(' '));
@@ -21,13 +28,10 @@ function AgentDetails(props) {
 			<ScrollView horizontal={false} style={styles.agentScreenContainer}>
 				<Layout style={styles.agentPageContainer}>
 					<Layout style={styles.imageContainer}>
-						<Image
-							style={styles.imageCover}
-							source={require('../../assets/background-image-1.jpg')}
-						/>
+						<Image style={styles.imageCover} source={{ uri: bgImageUrl }} />
 						<Avatar
 							size='giant'
-							source={require('../../assets/profile-image.jpg')}
+							source={{ uri: profileURL }}
 							style={styles.profileImage}
 						/>
 					</Layout>

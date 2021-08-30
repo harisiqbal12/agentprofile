@@ -24,7 +24,7 @@ function Agents(props) {
 			<Searchbar
 				theme={{ colors: { primary: '#EA723D' } }}
 				style={styles.searchBar}
-				placeholder='search'
+				placeholder='search agent'
 			/>
 			<FlatList
 				contentContainerStyle={{

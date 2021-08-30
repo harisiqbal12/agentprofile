@@ -17,9 +17,7 @@ function Homescreen(props) {
 	const { currentAgent } = props;
 
 	useEffect(() => {
-		// console.log('current agent: ' + currentAgent.length);
 		if (currentAgent.length > 0) {
-			// console.log('truee');
 			setLoading(false);
 		}
 	}, [currentAgent]);
@@ -42,8 +40,7 @@ function Homescreen(props) {
 				contentContainerStyle={{ padding: 16 }}
 				data={currentAgent}
 				renderItem={({ item }) => {
-					console.log('itemsss');
-					console.log(item.email);
+
 					return (
 						<TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
 							<HomescreenCard item={item} />

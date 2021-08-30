@@ -17,7 +17,7 @@ const AgentCard = props => {
 				<Avatar
 					style={styles.avatar}
 					size='giant'
-					source={require('../../assets/profile-image.jpg')}
+					source={{ uri: item.profileURL }}
 				/>
 			</Layout>
 			<Card.Content>
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
 	agentProfile: {
 		position: 'relative',
 		top: 10,
+		marginLeft: 10
 	},
 	agentNumber: {
 		fontSize: 10,

@@ -13,7 +13,6 @@ import firebase from 'firebase';
 
 function Settings(props) {
 	const { currentUser, currentAgent } = props;
-	console.log(currentAgent);
 
 	const handleCardPress = async () => {
 		console.log('pressing');
@@ -34,6 +33,9 @@ function Settings(props) {
 		props.navigation.navigate('AgentProfile', {
 			currentAgent,
 		});
+
+	const handleCreatePropertiesNavigation = () =>
+		props.navigation.navigate('CreateProperties');
 
 	return (
 		<SafeAreaView style={styles.settingContainer}>
@@ -59,10 +61,10 @@ function Settings(props) {
 						onPress={handleCardPress}
 						style={styles.cardProfile}
 						status='primary'>
-						<TouchableOpacity>
-							<Icon name='pie-chart' fill='#fff' style={styles.cardIcon} />
-							<Text style={{ ...styles.cardTitle, fontSize: 12 }}>
-								My Properties
+						<TouchableOpacity onPress={handleCreatePropertiesNavigation}>
+							<Icon name='plus-square' fill='#fff' style={styles.cardIcon} />
+							<Text style={{ ...styles.cardTitle, fontSize: 10 }}>
+								Create Properties
 							</Text>
 						</TouchableOpacity>
 					</Card>

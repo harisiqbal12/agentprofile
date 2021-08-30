@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -12,15 +12,22 @@ import {
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
 import Settings from '../../components/Settings';
+import Properties from '../../components/Properties';
 
 const Tab = createMaterialBottomTabNavigator();
 
 function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 	useEffect(() => {
+		let cancel = false;
+
+		if (cancel) return;
 		fetchUser();
 		fetchAgents();
 		fetchCurrentAgent();
-		console.log('fetch agents');
+
+		return () => {
+			cancel = true;
+		};
 	}, []);
 
 	return (
@@ -46,6 +53,20 @@ function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 					tabBarLabel: 'Agents',
 					tabBarIcon: ({ color }) => (
 						<Icon style={{ height: 26, width: 26 }} fill={color} name='people' />
+					),
+				}}
+			/>
+			<Tab.Screen
+				component={Properties}
+				name='Properties'
+				options={{
+					tabBarLabel: 'Properties',
+					tabBarIcon: ({ color }) => (
+						<Icon
+							style={{ height: 26, width: 26 }}
+							fill={color}
+							name='pie-chart'
+						/>
 					),
 				}}
 			/>

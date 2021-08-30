@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
-import { Layout, Text, Avatar, Icon } from '@ui-kitten/components';
-import { StyleSheet  } from 'react-native';
+import React from 'react';
+import { Layout, Avatar, Icon } from '@ui-kitten/components';
+import { StyleSheet } from 'react-native';
 import { Card, Title, Avatar as PaperAvatar } from 'react-native-paper';
+import firebase from 'firebase';
+import 'firebase/firebase-storage';
 
 function HomescreenCard({ item }) {
-	const { displayName, mobile, listedProperties } = item;
+	const { displayName, mobile, listedProperties, bgImageUrl, profileURL } = item;
 
 	return (
 		<Card elevation={5} style={styles.agentsCard}>
@@ -16,12 +18,14 @@ function HomescreenCard({ item }) {
 				subtitle={mobile}
 			/>
 
-			<Card.Cover source={require('../../assets/background-image-1.jpg')} />
+			<Card.Cover source={{ uri: bgImageUrl }} />
 			<Layout style={styles.avatarContainer}>
 				<Avatar
 					style={styles.avatar}
 					size='giant'
-					source={require('../../assets/profile-image.jpg')}
+					source={{
+						uri: profileURL,
+					}}
 				/>
 			</Layout>
 			<Card.Content>

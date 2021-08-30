@@ -50,12 +50,9 @@ export function fetchCurrentAgent() {
 		try {
 			const currentUser = await firebase.auth().currentUser;
 			const agentsRef = await firebase.database().ref('agents');
-			console.log(currentUser.uid);
 			agentsRef.on('child_added', snapshot => {
 				// console.log(snapshot.key);
-				console.log('snapp keys');
 				if (snapshot.key.includes(currentUser.uid)) {
-					console.log('truee');
 					dispatch({ type: CURRENT_AGENT, currentAgent: snapshot.val() });
 					return;
 				}
