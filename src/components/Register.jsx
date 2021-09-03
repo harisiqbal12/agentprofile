@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
-import { Layout, Button, Input, Text, Icon } from '@ui-kitten/components';
+import {
+	Layout,
+	Button,
+	Input,
+	Text,
+	Icon,
+	Spinner,
+} from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 import firebase from 'firebase';
+
+import SpinnerSmall from './spinnerSmall';
 
 function Register() {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const onSignup = async () => {
 		try {
 			if (!name.length || !email.length || !password.length) {
 				return;
 			}
+
+			setLoading(true);
 
 			const user = await firebase
 				.auth()
@@ -30,8 +42,10 @@ function Register() {
 			setName(' ');
 			setEmail(' ');
 			setPassword(' ');
+			setLoading(false);
 		} catch (err) {
 			console.log(err);
+			setLoading(false);
 		}
 	};
 
@@ -71,7 +85,9 @@ function Register() {
 					onChangeText={t => setPassword(t)}
 					accessoryLeft={() => inputIcon('lock')}
 				/>
-				<Button onPress={onSignup}>Signup</Button>
+				<Button accessoryLeft={loading && SpinnerSmall} onPress={onSignup}>
+					{!loading && 'signup'}
+				</Button>
 			</Layout>
 		</Layout>
 	);

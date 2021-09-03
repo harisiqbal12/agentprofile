@@ -7,6 +7,9 @@ import {
 	Image,
 } from 'react-native';
 import { Layout, Text, Avatar, Icon, Button } from '@ui-kitten/components';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { default as theme } from '../theme/custom-theme.json';
 
 function AgentDetails(props) {
 	const {
@@ -15,9 +18,10 @@ function AgentDetails(props) {
 		displayName,
 		mobile,
 		email,
-		listedProperties,
+		listingProperties,
 		bgImageUrl,
 		profileURL,
+		whatsApp,
 	} = props.route.params.data;
 	// console.log(props);
 
@@ -38,7 +42,12 @@ function AgentDetails(props) {
 					<Layout style={styles.agentContent}>
 						<Text style={styles.agentName}>{displayName}</Text>
 						<Layout style={styles.workDetails}>
-							<Icon name='briefcase' fill='#8F9BB3' style={styles.basicIcon} />
+							<MaterialCommunityIcons
+								name='office-building'
+								color='#8F9BB3'
+								size={20}
+								style={styles.basicIcon}
+							/>
 							<Text style={styles.basicFontStyling}>
 								{' '}
 								<Text style={styles.nestedFontStyling}>Office</Text> {office}
@@ -51,8 +60,19 @@ function AgentDetails(props) {
 							<Text style={styles.basicFontStyling}>
 								<Text style={styles.nestedFontStyling}>Email</Text> {email}
 							</Text>
-							<Text style={styles.listedProperties}>Listed Properties</Text>
-							<Text style={styles.listedProperty}>{listedProperties}</Text>
+							<MaterialCommunityIcons
+								name='whatsapp'
+								color='#8F9BB3'
+								size={20}
+								style={styles.basicIcon}
+							/>
+							<Text style={styles.basicFontStyling}>
+								<Text style={styles.nestedFontStyling}>Email</Text> {whatsApp}
+							</Text>
+							<Text style={styles.listedProperties}>
+								Listed Properties
+								<Text style={styles.nestedFontStyling}> {listingProperties}</Text>
+							</Text>
 						</Layout>
 						<Layout style={styles.aboutAgent}>
 							<Text style={styles.aboutHeading}>
@@ -157,7 +177,7 @@ const styles = StyleSheet.create({
 	},
 	listedProperty: {
 		fontWeight: 'bold',
-		color: '#EA723D',
+		color: theme['color-primary-400'],
 		fontFamily: 'Roboto_400Regular',
 		left: 10,
 	},

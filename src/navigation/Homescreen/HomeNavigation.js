@@ -8,15 +8,23 @@ import {
 	fetchUser,
 	fetchAgents,
 	fetchCurrentAgent,
+	fetchAllProperties,
 } from '../../redux/actions/index';
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
 import Settings from '../../components/Settings';
 import Properties from '../../components/Properties';
 
+import { default as theme } from '../../theme/custom-theme.json';
+
 const Tab = createMaterialBottomTabNavigator();
 
-function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
+function HomeNavigation({
+	fetchUser,
+	fetchAgents,
+	fetchCurrentAgent,
+	fetchAllProperties,
+}) {
 	useEffect(() => {
 		let cancel = false;
 
@@ -24,6 +32,7 @@ function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 		fetchUser();
 		fetchAgents();
 		fetchCurrentAgent();
+		fetchAllProperties();
 
 		return () => {
 			cancel = true;
@@ -33,8 +42,8 @@ function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 	return (
 		<Tab.Navigator
 			labeled={true}
-			activeColor={'#FF8E33'}
-			barStyle={{ backgroundColor: '#fff' }}
+			activeColor={'#fff'}
+			barStyle={{ backgroundColor: theme['color-primary-400'] }}
 			initialRouteName='home'>
 			<Tab.Screen
 				component={Homescreen}
@@ -89,6 +98,9 @@ function HomeNavigation({ fetchUser, fetchAgents, fetchCurrentAgent }) {
 }
 
 const mapDispatchtoProps = dispatch =>
-	bindActionCreators({ fetchUser, fetchAgents, fetchCurrentAgent }, dispatch);
+	bindActionCreators(
+		{ fetchUser, fetchAgents, fetchCurrentAgent, fetchAllProperties },
+		dispatch
+	);
 
 export default connect(null, mapDispatchtoProps)(HomeNavigation);

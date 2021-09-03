@@ -1,6 +1,8 @@
 import React from 'react';
 import { Layout, Text, Button, Icon } from '@ui-kitten/components';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
+
+import { default as theme } from '../theme/custom-theme.json';
 
 function Landing({ navigation }) {
 	const handleSignupNavigation = () => navigation.navigate('Register');
@@ -9,8 +11,12 @@ function Landing({ navigation }) {
 	return (
 		<Layout style={styles.landingContainer}>
 			<Layout style={styles.titleContainer}>
-				<Icon style={styles.icon} fill='#8F9BB3' name='people' />
-				<Text style={styles.title}>Agentprofile</Text>
+				<Image
+					style={styles.logoImage}
+					source={require('../../assets/LOGO.png')}
+				/>
+				<Text style={styles.title}>AGENTPROFILE</Text>
+				<Text style={styles.subTitle}>find an agent</Text>
 			</Layout>
 
 			<Layout style={styles.buttonContainer}>
@@ -34,15 +40,16 @@ const styles = StyleSheet.create({
 	},
 
 	titleContainer: {
-		flex: 0.3,
+		flex: 0.4,
 	},
 
 	title: {
-		fontSize: 18,
+		fontSize: 26,
 		fontWeight: 'bold',
-		color: '#8F9BB3',
+		color: theme['color-primary-500'],
 		fontFamily: 'Roboto_400Regular',
 		textAlign: 'center',
+		marginBottom: 10,
 	},
 
 	icon: {
@@ -57,6 +64,18 @@ const styles = StyleSheet.create({
 	button: {
 		width: 200,
 		margin: 2,
+	},
+	logoImage: {
+		width: 220,
+		height: 220,
+	},
+	subTitle: {
+		fontSize: 15,
+		fontWeight: 'bold',
+		color: theme['color-primary-500'],
+		fontFamily: 'Roboto_400Regular',
+		textAlign: 'center',
+		letterSpacing: 5,
 	},
 });
 

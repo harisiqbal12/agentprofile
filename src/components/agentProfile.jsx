@@ -11,9 +11,10 @@ import {
 	ScrollView,
 } from 'react-native';
 
-import { fetchAgents } from '../redux/actions/index';
+import { fetchAgents, fetchCurrentAgent } from '../redux/actions/index';
 import firebase from 'firebase';
 import 'firebase/firebase-storage';
+import { default as theme } from '../theme/custom-theme.json';
 
 function AgentProfile(props) {
 	const { currentAgent } = props.route.params;
@@ -73,7 +74,8 @@ function AgentProfile(props) {
 					whatsApp,
 					about,
 					bgImageUrl,
-					profileURL: profiileImageURL,
+					profileURL: profiileImageURL ? profiileImageURL : profileURL,
+					listingProperties: 0,
 				});
 
 				console.log('create done');
@@ -87,14 +89,15 @@ function AgentProfile(props) {
 				office,
 				whatsApp,
 				about,
-				profileURL: profiileImageURL,
+				profileURL: profiileImageURL ? profiileImageURL : profileURL,
 			});
 
 			console.log('\n\n\nreading from state*******');
 			console.log(profiileImageURL);
 
 			console.log('update done');
-			props.fetchAgents();
+			await props.fetchAgents();
+			await props.fetchCurrentAgent();
 		} catch (err) {
 			console.log(err);
 		}
@@ -114,7 +117,7 @@ function AgentProfile(props) {
 
 			if (!result.cancelled) {
 				setImage(result.uri);
-				setProfileURL(result.uri)
+				setProfileURL(result.uri);
 				console.log(result.uri);
 			}
 		} catch (err) {
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
 		width: 150,
 		height: 150,
 		borderWidth: 4,
-		borderColor: '#EA723D',
+		borderColor: theme['color-primary-500'],
 		marginTop: 20,
 	},
 	ScrollView: {
@@ -278,6 +281,6 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchtoProps = dispatch =>
-	bindActionCreators({ fetchAgents }, dispatch);
+	bindActionCreators({ fetchAgents, fetchCurrentAgent }, dispatch);
 
 export default connect(null, mapDispatchtoProps)(AgentProfile);

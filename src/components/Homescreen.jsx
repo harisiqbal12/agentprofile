@@ -1,31 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Text } from '@ui-kitten/components';
-import {
-	SafeAreaView,
-	StyleSheet,
-	StatusBar,
-	FlatList,
-	TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import { fetchAgentProperty, fetchAgents } from '../redux/actions';
 import HomescreenCard from './HomescreenCard';
 import Loader from './Loader';
 
 function Homescreen(props) {
 	const [loading, setLoading] = useState(true);
 	const { currentAgent } = props;
+	const [isRefreshing, setIsRefreshing] = useState(false);
 
 	useEffect(() => {
+		let cancel = false;
+
+		if (cancel) return;
 		if (currentAgent.length > 0) {
+			console.log(currentAgent[0].id);
+			currentAgent.forEach((agent, index) => {
+				props.fetchAgentProperty(agent.id);
+			});
+
 			setLoading(false);
 		}
+
+		return () => {
+			cancel = true;
+		};
 	}, [currentAgent]);
 
-	const handleAgentDetailsNavigation = data =>
-		props.navigation.navigate('AgentDetails', {
-			data,
-		});
+	const handleRefresh = () => {
+		setIsRefreshing(true);
+		console.log('refreshing home screen');
+		props.fetchAgents();
+		setTimeout(() => {
+			setIsRefreshing(false);
+			currentAgent.forEach((agent, index) => {
+				props.fetchAgentProperty(agent.id);
+			});
+		}, 1000);
+	};
 
 	if (loading) {
 		return <Loader />;
@@ -37,14 +53,19 @@ function Homescreen(props) {
 				<Text style={styles.headerTitle}>Agent Profiles</Text>
 			</Layout>
 			<FlatList
+				refreshing={isRefreshing}
+				onRefresh={handleRefresh}
 				contentContainerStyle={{ padding: 16 }}
 				data={currentAgent}
 				renderItem={({ item }) => {
-
 					return (
-						<TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
-							<HomescreenCard item={item} />
-						</TouchableOpacity>
+						// <TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
+						<HomescreenCard
+							navigation={props.navigation}
+							agentProperty={props.agentProperty}
+							item={item}
+						/>
+						// </TouchableOpacity>
 					);
 				}}
 				keyExtractor={item => item.id}
@@ -77,8 +98,12 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = store => ({
-	currentAgent: store.agentState.agents,
+const mapStateToProps = state => ({
+	currentAgent: state.agentState.agents,
+	agentProperty: state.propertyState.agentProperty,
 });
 
-export default connect(mapStateToProps)(Homescreen);
+const mapDispatchToProps = dispatch =>
+	bindActionCreators({ fetchAgentProperty, fetchAgents }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Homescreen);

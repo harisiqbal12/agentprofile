@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Layout, Text, Button, Input } from '@ui-kitten/components';
 import firebase from 'firebase';
+import { default as theme } from '../theme/custom-theme.json';
 
 function Profile(props) {
 	const { displayName, email } = props.route.params.currentUser;
@@ -46,48 +47,44 @@ function Profile(props) {
 
 	return (
 		<SafeAreaView style={styles.SafeAreaView}>
-			<ScrollView style={styles.ScrollView} horizontal={false}>
-				<Layout style={styles.imageContainer}>
-					<Image
-						style={styles.imageCover}
-						source={require('../../assets/profile-image.jpg')}
+			<Layout style={styles.imageContainer}>
+				<Image
+					style={styles.image}
+					source={require('../../assets/20943447.jpg')}
+				/>
+				<Text style={styles.title}>Manage Your Account</Text>
+				<Layout style={styles.contentContainer}>
+					<Input
+						value={fullName}
+						style={styles.input}
+						placeholder='Full Name'
+						onChangeText={t => setFullName(t)}
 					/>
-					<Layout style={styles.imageButtonContainer}>
-						<Button style={styles.imageButton}>Upload New Photo</Button>
-					</Layout>
-					<Layout style={styles.contentContainer}>
-						<Input
-							value={fullName}
-							style={styles.input}
-							placeholder='Full Name'
-							onChangeText={t => setFullName(t)}
-						/>
-						<Input
-							value={email}
-							disabled
-							style={styles.input}
-							placeholder='Email'
-						/>
-						<Input
-							onChangeText={t => setPassword(t)}
-							value={password}
-							style={styles.input}
-							placeholder=' Password'
-						/>
-						<Input
-							value={confirmPassword}
-							style={styles.input}
-							placeholder='Confirm Password'
-							onChangeText={t => setConfirmPassword(t)}
-						/>
-					</Layout>
-					<Layout style={styles.imageButtonContainer}>
-						<Button onPress={updateUserCredentials} style={styles.saveButton}>
-							Save
-						</Button>
-					</Layout>
+					<Input
+						value={email}
+						disabled
+						style={styles.input}
+						placeholder='Email'
+					/>
+					<Input
+						onChangeText={t => setPassword(t)}
+						value={password}
+						style={styles.input}
+						placeholder=' Password'
+					/>
+					<Input
+						value={confirmPassword}
+						style={styles.input}
+						placeholder='Confirm Password'
+						onChangeText={t => setConfirmPassword(t)}
+					/>
 				</Layout>
-			</ScrollView>
+				<Layout style={styles.imageButtonContainer}>
+					<Button onPress={updateUserCredentials} style={styles.saveButton}>
+						Save
+					</Button>
+				</Layout>
+			</Layout>
 		</SafeAreaView>
 	);
 }
@@ -99,9 +96,10 @@ const styles = StyleSheet.create({
 	},
 	ScrollView: {
 		marginTop: StatusBar.currentHeight,
+		flex: 1,
 	},
 	imageContainer: {
-		marginTop: 50,
+		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		padding: 10,
@@ -133,6 +131,16 @@ const styles = StyleSheet.create({
 	saveButton: {
 		marginTop: 50,
 		width: 160,
+	},
+	image: {
+		width: 250,
+		height: 250,
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		color: theme['color-primary-500'],
+		fontFamily: 'Roboto_400Regular',
 	},
 });
 

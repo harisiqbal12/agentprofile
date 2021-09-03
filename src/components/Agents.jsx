@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import {
 	SafeAreaView,
@@ -9,15 +9,28 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import AgentCard from './AgentCard';
+import { bindActionCreators } from 'redux';
+import { fetchAgents } from '../redux/actions';
 
 function Agents(props) {
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const { currentAgent } = props;
-	console.log(StatusBar.currentHeight);
 
-	const handleListingPropertiessNavigaiton = () =>
-		props.navigation.navigate('ListingProperties', {
-			properties: 'haris',
+	const handleListingPropertiessNavigaiton = item =>
+		props.navigation.navigate('AgentDetails', {
+			data: item,
 		});
+
+	const handelRefresh = () => {
+		setIsRefreshing(true);
+		console.log('agents refreshing');
+
+		props.fetchAgents();
+
+		setTimeout(() => {
+			setIsRefreshing(false);
+		}, 1000);
+	};
 
 	return (
 		<SafeAreaView style={styles.agentContainer}>
@@ -27,6 +40,8 @@ function Agents(props) {
 				placeholder='search agent'
 			/>
 			<FlatList
+				refreshing={isRefreshing}
+				onRefresh={handelRefresh}
 				contentContainerStyle={{
 					padding: 16,
 				}}
@@ -34,7 +49,8 @@ function Agents(props) {
 				data={currentAgent}
 				renderItem={({ item }) => {
 					return (
-						<TouchableOpacity onPress={handleListingPropertiessNavigaiton}>
+						<TouchableOpacity
+							onPress={() => handleListingPropertiessNavigaiton(item)}>
 							<AgentCard item={item} />
 						</TouchableOpacity>
 					);
@@ -62,4 +78,7 @@ const mapStateToProps = store => ({
 	currentAgent: store.agentState.agents,
 });
 
-export default connect(mapStateToProps)(Agents);
+const mapDispatchToProps = dispatch =>
+	bindActionCreators({ fetchAgents }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Agents);

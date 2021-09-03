@@ -26,6 +26,9 @@ function CreateProperties() {
 	const [outdoorEntertainingArea, setOutdoorEntertainingArea] = useState(false);
 	const [floorboards, setFloorboards] = useState(false);
 	const [dishWasher, setDishwasher] = useState(false);
+	const [balcony, setBalcony] = useState(false);
+	const [builtInWardrobes, setBuildInWardrobes] = useState(false);
+	const [courtyard, setCourtyard] = useState(false);
 
 	const [propertyName, setPropertyName] = useState('');
 	const [propertyAddress, setPropertyAddress] = useState('');
@@ -62,7 +65,7 @@ function CreateProperties() {
 			const result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
-				aspect: [1, 1],
+				aspect: [16, 9],
 				quality: 0.4,
 			});
 
@@ -86,13 +89,6 @@ function CreateProperties() {
 			console.log('error here 59');
 			console.log(err);
 		}
-	};
-
-	const taskProgress = snapshot => {
-		console.log(`transferred: ${snapshot.bytesTransferred}`);
-	};
-	const taskError = snapShot => {
-		console.log('ERRORRR ' + snapShot);
 	};
 
 	const uploadAndSaveData = async () => {
@@ -167,6 +163,7 @@ function CreateProperties() {
 		try {
 			const currentUser = firebase.auth().currentUser;
 			const propertyRef = firebase.database().ref('properties');
+			const agentRef = firebase.database().ref('agents');
 
 			await propertyRef.child(currentUser.uid).push({
 				propertyName,
@@ -178,6 +175,7 @@ function CreateProperties() {
 				bedrooms: selectBedrooms,
 				bathrooms: selectBathrooms,
 				garage: selectGarage,
+				authorID: currentUser.uid,
 				features: {
 					airCondition,
 					builtInRobes,
@@ -187,10 +185,19 @@ function CreateProperties() {
 					fullyFenced,
 					outdoorEntertainingArea,
 					floorboards,
+					balcony,
+					builtInWardrobes,
+					courtyard,
 				},
 			});
 
 			console.log('created');
+
+			await agentRef.child(currentUser.uid).update({
+				listingProperties: firebase.database.ServerValue.increment(1),
+			});
+
+			console.log('value increament');
 		} catch (err) {
 			console.log(err);
 		}
@@ -414,6 +421,24 @@ function CreateProperties() {
 								checked={floorboards}
 								onChange={() => setFloorboards(!floorboards)}>
 								Floorboards
+							</Toggle>
+							<Toggle
+								style={styles.toggle}
+								checked={balcony}
+								onChange={() => setBalcony(!balcony)}>
+								Balcony
+							</Toggle>
+							<Toggle
+								style={styles.toggle}
+								checked={builtInWardrobes}
+								onChange={() => setBuildInWardrobes(!builtInWardrobes)}>
+								Built-in wardrobes
+							</Toggle>
+							<Toggle
+								style={styles.toggle}
+								checked={courtyard}
+								onChange={() => setCourtyard(!courtyard)}>
+								Courtyard
 							</Toggle>
 						</Layout>
 					</Layout>

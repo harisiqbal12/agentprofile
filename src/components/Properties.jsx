@@ -1,15 +1,33 @@
 import React from 'react';
-import { Layout, Text } from '@ui-kitten/components';
-import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	FlatList,
+	TouchableOpacity,
+} from 'react-native';
 import { Searchbar } from 'react-native-paper';
+import { connect } from 'react-redux';
 
-function Properties() {
+import PropertyCard from './PropertyCard';
+
+function Properties({ currentProperties }) {
+	console.log('current properties');
+
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<Searchbar
 				theme={{ colors: { primary: '#EA723D' } }}
 				style={styles.searchBar}
 				placeholder='search properties'
+			/>
+			<FlatList
+				contentContainerStyle={{ padding: 16 }}
+				data={currentProperties}
+				renderItem={({ item }) => {
+					return <PropertyCard data={item} />;
+				}}
+				keyExtractor={(item, index) => index.toString()}
 			/>
 		</SafeAreaView>
 	);
@@ -25,4 +43,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Properties;
+const mapStateToProps = state => ({
+	currentProperties: state.propertyState.currentProperties,
+});
+export default connect(mapStateToProps)(Properties);

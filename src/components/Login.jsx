@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Layout, Button, Input, Text, Icon } from '@ui-kitten/components';
 import firebase from 'firebase';
 import { StyleSheet } from 'react-native';
+import SpinnerSmall from './spinnerSmall';
 
 function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loading, setLoading] = useState(false);
 
 	const inputIcon = iconName => (
 		<Icon style={styles.inputIcon} fill='#616979' name={iconName} />
@@ -13,15 +15,20 @@ function Login() {
 
 	const handleLogin = async () => {
 		try {
+			setLoading(true);
+			console.log('loading state: ' + loading);
 			if (!email.length || !password.length) {
 				console.log('provide all fields please');
+				setLoading(false);
 				return;
 			}
 
-			firebase.auth().signInWithEmailAndPassword(email, password);
-			setEmail(' ');
-			setPassword(' ');
+			await firebase.auth().signInWithEmailAndPassword(email, password);
+			setEmail('');
+			setPassword('');
 		} catch (err) {
+			setLoading(false);
+			console.log('error');
 			console.log(err);
 		}
 	};
@@ -50,7 +57,9 @@ function Login() {
 					accessoryLeft={() => inputIcon('lock')}
 					onChangeText={t => setPassword(t)}
 				/>
-				<Button onPress={handleLogin}>Login</Button>
+				<Button accessoryLeft={loading && SpinnerSmall} onPress={handleLogin}>
+					{!loading && 'login'}
+				</Button>
 			</Layout>
 		</Layout>
 	);
