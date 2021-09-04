@@ -1,7 +1,13 @@
-import { CURRENT_PROPERTIES, AGENT_PROPERTY } from '../constants';
+import {
+	CURRENT_PROPERTIES,
+	AGENT_PROPERTY,
+	AGENT_PROPERTY_BY_ID,
+} from '../constants';
 
 const INITIAL_STATE = {
 	currentProperties: [],
+	agentProperty: [],
+	agentProperties: [],
 };
 
 const propertyReducer = (state = INITIAL_STATE, action) => {
@@ -16,6 +22,12 @@ const propertyReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				agentProperty: action.agentProperty,
+			};
+
+		case AGENT_PROPERTY_BY_ID:
+			return {
+				...state,
+				agentProperties: action.agentProperties,
 			};
 
 		default:

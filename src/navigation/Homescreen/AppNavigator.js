@@ -7,6 +7,7 @@ import ListingProperties from '../../components/ListingProperties';
 import Profile from '../../components/Profile';
 import AgentProfile from '../../components/agentProfile';
 import CreateProperties from '../../components/CreateProperties';
+import Property from '../../components/Property'
 
 const App = createStackNavigator();
 
@@ -24,6 +25,7 @@ function AppNavigation(props) {
 			<App.Screen name='Profile' component={Profile} />
 			<App.Screen name='AgentProfile' component={AgentProfile} />
 			<App.Screen name='CreateProperties' component={CreateProperties} />
+			<App.Screen name='Property' component={Property} />
 		</App.Navigator>
 	);
 }

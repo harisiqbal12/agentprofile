@@ -41,6 +41,12 @@ function HomescreenCard(props) {
 			data: props.item,
 		});
 
+	handleAgentListingNavigation = () =>
+		props.navigation.navigate('ListingProperties', {
+			agentID: props.item.id,
+			displayName,
+		});
+
 	return (
 		<Card elevation={5} style={styles.agentsCard}>
 			<TouchableOpacity onPress={hanldeAgentDetailsNavigation}>
@@ -90,7 +96,9 @@ function HomescreenCard(props) {
 					<Button onPress={hanldeAgentDetailsNavigation} style={styles.button}>
 						Visit Profile
 					</Button>
-					<Button style={styles.button}>Visit Listing</Button>
+					<Button onPress={handleAgentListingNavigation} style={styles.button}>
+						Visit Listing
+					</Button>
 				</Layout>
 			</Layout>
 		</Card>

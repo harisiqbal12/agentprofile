@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-	SafeAreaView,
-	StyleSheet,
-	StatusBar,
-	FlatList,
-	TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { connect } from 'react-redux';
 
 import PropertyCard from './PropertyCard';
 
-function Properties({ currentProperties }) {
-	console.log('current properties');
+function Properties(props) {
+	const { currentProperties } = props;
 
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
@@ -25,7 +19,7 @@ function Properties({ currentProperties }) {
 				contentContainerStyle={{ padding: 16 }}
 				data={currentProperties}
 				renderItem={({ item }) => {
-					return <PropertyCard data={item} />;
+					return <PropertyCard navigation={props.navigation} data={item} />;
 				}}
 				keyExtractor={(item, index) => index.toString()}
 			/>

@@ -4,6 +4,8 @@ import {
 	CURRENT_AGENT,
 	CURRENT_PROPERTIES,
 	AGENT_PROPERTY,
+	AGENT_BY_ID,
+	AGENT_PROPERTY_BY_ID,
 } from '../constants/index';
 import firebase from 'firebase';
 
@@ -40,6 +42,20 @@ export function fetchAgents() {
 				data.push(agents);
 
 				dispatch({ type: ADDED_AGENTS, agents: data });
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchAgentById(agentId) {
+	return async dispatch => {
+		try {
+			const agentsRef = firebase.database().ref(`agents/${agentId}`);
+			agentsRef.on('value', snapshot => {
+				const agent = snapshot.val();
+				dispatch({ type: AGENT_BY_ID, agent });
 			});
 		} catch (err) {
 			console.log(err);
@@ -84,6 +100,27 @@ export function fetchAllProperties() {
 		}
 	};
 }
+
+export function fetchAgentProperites(agentId) {
+	return async dispatch => {
+		try {
+			let data = [];
+			console.log('fetch agent properites ');
+			const propertyRef = firebase.database().ref(`properties/${agentId}`);
+			propertyRef.on('child_added', snapshot => {
+				const properites = snapshot.val();
+				properites['id'] = snapshot.key;
+
+				data.push(properites);
+
+				dispatch({ type: AGENT_PROPERTY_BY_ID, agentProperties: data });
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
 let data = [];
 
 export function fetchAgentProperty(agentId) {

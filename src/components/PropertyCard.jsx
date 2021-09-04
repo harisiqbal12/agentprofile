@@ -1,36 +1,43 @@
 import React from 'react';
 import { Layout, Text, Button } from '@ui-kitten/components';
-import { StyleSheet, ScrollView, Image } from 'react-native';
+import { StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-paper';
 import formate from 'format-number';
 
 import { default as theme } from '../theme/custom-theme.json';
 
-function PropertyCard({ data }) {
-	// consoo
+function PropertyCard(props) {
+	const { data } = props;
 	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
-	// console.log(formatedNumber);
+
+	const handlePropertyNavigation = () =>
+		props.navigation.navigate('Property', {
+			data: data,
+		});
 
 	return (
 		<Card elevation={5} style={styles.card}>
 			<Text style={styles.propertyPrice}>{formatedNumber}</Text>
-			<Card.Title
-				titleStyle={{
-					color: theme['color-primary-100'],
-					fontSize: 18,
-					fontWeight: 'bold',
-					fontFamily: 'Roboto_400Regular',
-				}}
-				style={styles.cardHeader}
-				title={data.propertyName}
-				subtitle={data.propertyAddress}
-				subtitleStyle={{
-					color: theme['color-primary-200'],
-					fontSize: 10,
-					fontWeight: 'bold',
-					fontFamily: 'Roboto_400Regular',
-				}}
-			/>
+			<TouchableOpacity onPress={handlePropertyNavigation}>
+				<Card.Title
+					titleStyle={{
+						color: theme['color-primary-100'],
+						fontSize: 18,
+						fontWeight: 'bold',
+						fontFamily: 'Roboto_400Regular',
+					}}
+					style={styles.cardHeader}
+					title={data.propertyName}
+					subtitle={data.propertyAddress}
+					subtitleStyle={{
+						color: theme['color-primary-200'],
+						fontSize: 10,
+						fontWeight: 'bold',
+						fontFamily: 'Roboto_400Regular',
+					}}
+				/>
+			</TouchableOpacity>
+
 			<Layout style={styles.imageContainer}>
 				<ScrollView
 					style={{ flex: 1 }}
@@ -43,7 +50,9 @@ function PropertyCard({ data }) {
 				</ScrollView>
 			</Layout>
 			<Card.Content style={styles.cardContent}>
-				<Button style={styles.button}>Visit Property</Button>
+				<Button onPress={handlePropertyNavigation} style={styles.button}>
+					Visit Property
+				</Button>
 			</Card.Content>
 		</Card>
 	);

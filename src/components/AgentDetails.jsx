@@ -22,10 +22,16 @@ function AgentDetails(props) {
 		bgImageUrl,
 		profileURL,
 		whatsApp,
+		id,
 	} = props.route.params.data;
-	// console.log(props);
 
-	// console.log(displayName.split(' '));
+	console.log('agent: ' + id);
+
+	const handleListingNavigation = () =>
+		props.navigation.navigate('ListingProperties', {
+			agentID: id,
+			displayName,
+		});
 
 	return (
 		<SafeAreaView style={styles.agentDetails}>
@@ -82,7 +88,7 @@ function AgentDetails(props) {
 						</Layout>
 					</Layout>
 					<Layout style={styles.myListingButton}>
-						<Button>My Listing</Button>
+						<Button onPress={handleListingNavigation}>My Listing</Button>
 					</Layout>
 				</Layout>
 			</ScrollView>

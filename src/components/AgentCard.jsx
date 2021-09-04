@@ -41,6 +41,10 @@ const styles = StyleSheet.create({
 	avatar: {
 		height: 80,
 		width: 80,
+		borderRadius: 0,
+		borderColor: '#fff',
+		borderWidth: 3,
+		marginTop: 10,
 	},
 	agentProfile: {
 		position: 'relative',
