@@ -25,12 +25,16 @@ function AgentDetails(props) {
 		id,
 	} = props.route.params.data;
 
-	console.log('agent: ' + id);
 
 	const handleListingNavigation = () =>
 		props.navigation.navigate('ListingProperties', {
 			agentID: id,
 			displayName,
+		});
+
+	const hanldeContactNavigation = () =>
+		props.navigation.navigate('Contact', {
+			agentEmail: email,
 		});
 
 	return (
@@ -86,9 +90,14 @@ function AgentDetails(props) {
 							</Text>
 							<Text style={styles.aboutParagraph}>{about}</Text>
 						</Layout>
-					</Layout>
-					<Layout style={styles.myListingButton}>
-						<Button onPress={handleListingNavigation}>My Listing</Button>
+						<Layout style={styles.myListingButton}>
+							<Button style={styles.Button} onPress={handleListingNavigation}>
+								My Listing
+							</Button>
+							<Button onPress={hanldeContactNavigation} style={styles.Button}>
+								Contact
+							</Button>
+						</Layout>
 					</Layout>
 				</Layout>
 			</ScrollView>
@@ -211,6 +220,13 @@ const styles = StyleSheet.create({
 	myListingButton: {
 		marginTop: 10,
 		marginBottom: 10,
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+	Button: {
+		width: 150,
+		margin: 5,
 	},
 });
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Searchbar } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { Searchbar, Button } from 'react-native-paper';
 import {
 	SafeAreaView,
 	StyleSheet,
@@ -11,25 +11,55 @@ import { connect } from 'react-redux';
 import AgentCard from './AgentCard';
 import { bindActionCreators } from 'redux';
 import { fetchAgents } from '../redux/actions';
+import firebase from 'firebase';
 
 function Agents(props) {
 	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [searchData, setSearchData] = useState(null);
+	const [searchCompleted, setSearchCompleted] = useState(false);
+
 	const { currentAgent } = props;
+
+	useEffect(() => {}, [searchData]);
 
 	const handleListingPropertiessNavigaiton = item =>
 		props.navigation.navigate('AgentDetails', {
 			data: item,
 		});
 
-	const handelRefresh = () => {
+	const handelRefresh = async () => {
 		setIsRefreshing(true);
-		console.log('agents refreshing');
 
-		props.fetchAgents();
+		await props.fetchAgents();
 
 		setTimeout(() => {
 			setIsRefreshing(false);
 		}, 1000);
+	};
+
+	const search = async text => {
+		try {
+			let data = [];
+			const agentsRef = firebase.database().ref('agents');
+			const agent = agentsRef
+				.orderByChild('displayName')
+				.equalTo(text)
+				.on('child_added', snaphot => {
+					console.log(snaphot.val());
+					const res = snaphot.val();
+					res['id'] = snaphot.key;
+					data.push(res);
+
+					setSearchData(data);
+					setSearchCompleted(true);
+				});
+
+			if (!text.length > 0) {
+				setSearchCompleted(false);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -38,6 +68,7 @@ function Agents(props) {
 				theme={{ colors: { primary: '#EA723D' } }}
 				style={styles.searchBar}
 				placeholder='search agent'
+				onChangeText={search}
 			/>
 			<FlatList
 				refreshing={isRefreshing}
@@ -46,7 +77,7 @@ function Agents(props) {
 					padding: 16,
 				}}
 				style={styles.flatList}
-				data={currentAgent}
+				data={searchCompleted ? searchData : currentAgent}
 				renderItem={({ item }) => {
 					return (
 						<TouchableOpacity

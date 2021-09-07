@@ -18,13 +18,46 @@ function Register() {
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	const [nameError, setNameError] = useState('');
+	const [emailError, setEmailError] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [isNameError, setIsNameError] = useState(false);
+	const [isEmailError, setIsEmailError] = useState(false);
+	const [isPasswordError, setIsPasswordError] = useState(false);
+	const [gError, setGError] = useState(false);
+
 	const onSignup = async () => {
 		try {
-			if (!name.length || !email.length || !password.length) {
-				return;
+			setNameError('');
+			setEmailError('');
+			setPasswordError('');
+			setIsNameError(false);
+			setIsEmailError(false);
+			setIsPasswordError(false);
+
+			if (!name.length > 0) {
+				setNameError('Please Provide Name Field');
+				setIsNameError(true);
+				gError(true);
+			}
+
+			if (!email.length > 0) {
+				setEmailError('Please Provide Email Field');
+				setIsEmailError(true);
+				gError(true);
+			}
+
+			if (!password.length > 0) {
+				setPasswordError('Please provide Password Field');
+				setIsPasswordError(true);
+				gError(true);
 			}
 
 			setLoading(true);
+
+			if (gError) {
+				return;
+			}
 
 			const user = await firebase
 				.auth()
@@ -61,6 +94,8 @@ function Register() {
 			</Layout>
 			<Layout style={styles.buttonConatiner}>
 				<Input
+					status={isNameError && 'danger'}
+					label={nameError}
 					value={name}
 					onChangeText={t => setName(t)}
 					size='large'
@@ -69,6 +104,8 @@ function Register() {
 					accessoryLeft={() => inputIcon('at')}
 				/>
 				<Input
+					status={isEmailError && 'danger'}
+					label={emailError}
 					value={email}
 					onChangeText={t => setEmail(t)}
 					size='large'
@@ -77,6 +114,8 @@ function Register() {
 					accessoryLeft={() => inputIcon('email')}
 				/>
 				<Input
+					status={isPasswordError && 'danger'}
+					label={passwordError}
 					secureTextEntry
 					size='large'
 					style={styles.input}

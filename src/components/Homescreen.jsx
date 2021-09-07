@@ -18,7 +18,6 @@ function Homescreen(props) {
 
 		if (cancel) return;
 		if (currentAgent.length > 0) {
-			console.log(currentAgent[0].id);
 			currentAgent.forEach((agent, index) => {
 				props.fetchAgentProperty(agent.id);
 			});
@@ -33,7 +32,6 @@ function Homescreen(props) {
 
 	const handleRefresh = () => {
 		setIsRefreshing(true);
-		console.log('refreshing home screen');
 		props.fetchAgents();
 		setTimeout(() => {
 			setIsRefreshing(false);

@@ -15,10 +15,12 @@ import { fetchAgents, fetchCurrentAgent } from '../redux/actions/index';
 import firebase from 'firebase';
 import 'firebase/firebase-storage';
 import { default as theme } from '../theme/custom-theme.json';
+import SpinnerSmall from './spinnerSmall';
 
 function AgentProfile(props) {
 	const { currentAgent } = props.route.params;
 
+	const [isLoading, setLoading] = useState(false);
 	const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
 	const [displayName, setDisplayName] = useState('');
 	const [email, setEmail] = useState('');
@@ -32,7 +34,6 @@ function AgentProfile(props) {
 	);
 
 	useEffect(() => {
-		console.log(currentAgent);
 		if (currentAgent) {
 			setDisplayName(currentAgent.displayName);
 			setEmail(currentAgent.email);
@@ -55,6 +56,7 @@ function AgentProfile(props) {
 	const handleSaveButton = async profiileImageURL => {
 		const currentUser = firebase.auth().currentUser;
 		const agentsRef = firebase.database().ref('agents');
+		setLoading(true);
 
 		try {
 			if (!currentAgent) {
@@ -78,7 +80,6 @@ function AgentProfile(props) {
 					listingProperties: 0,
 				});
 
-				console.log('create done');
 				return;
 			}
 
@@ -92,12 +93,11 @@ function AgentProfile(props) {
 				profileURL: profiileImageURL ? profiileImageURL : profileURL,
 			});
 
-			console.log('\n\n\nreading from state*******');
-			console.log(profiileImageURL);
 
-			console.log('update done');
+
 			await props.fetchAgents();
 			await props.fetchCurrentAgent();
+			setLoading(false);
 		} catch (err) {
 			console.log(err);
 		}
@@ -105,7 +105,6 @@ function AgentProfile(props) {
 
 	const loadGallery = async () => {
 		try {
-			console.log('loading image gallery');
 			const result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
@@ -113,12 +112,10 @@ function AgentProfile(props) {
 				quality: 0.4,
 			});
 
-			console.log(result);
 
 			if (!result.cancelled) {
 				setImage(result.uri);
 				setProfileURL(result.uri);
-				console.log(result.uri);
 			}
 		} catch (err) {
 			console.log(err);
@@ -130,12 +127,13 @@ function AgentProfile(props) {
 	};
 
 	const taskProgress = snapshot => {
-		console.log(`transferred: ${snapshot.bytesTransferred}`);
 	};
 
 	const handleUploadImage = async () => {
 		try {
 			if (image) {
+				setLoading(true);
+
 				const response = await fetch(image);
 				const blob = await response.blob();
 				const task = firebase
@@ -151,18 +149,15 @@ function AgentProfile(props) {
 				const taskCompleted = () => {
 					task.snapshot.ref.getDownloadURL().then(snapshot => {
 						handleSaveButton(snapshot);
-						console.log(snapshot);
-						console.log('transfered completed');
 					});
 				};
 
 				task.on('state_changed', taskProgress, taskError, taskCompleted);
-				console.log('image uploaded to firestorage');
 			} else {
 				handleSaveButton();
 			}
+
 		} catch (err) {
-			console.log('error encounted');
 			console.log(err);
 		}
 	};
@@ -232,8 +227,11 @@ function AgentProfile(props) {
 						value={about}
 						onChangeText={t => setAbout(t)}
 					/>
-					<Button onPress={handleUploadImage} style={styles.btnSave}>
-						Save
+					<Button
+						disabled={isLoading}
+						onPress={handleUploadImage}
+						style={styles.btnSave}>
+						{isLoading ? <SpinnerSmall /> : 'Save'}
 					</Button>
 				</Layout>
 			</ScrollView>

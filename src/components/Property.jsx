@@ -38,10 +38,15 @@ function Property(props) {
 		})();
 	}, []);
 
-	const handleAgentProfileNavigation = () =>
-		props.navigation.navigate('AgentDetails', {
-			data: props.agentByID,
+	const handleAgentProfileNavigation = () => {
+		let agent = props.agentByID;
+		agent['id'] = data.authorID;
+
+
+		return props.navigation.navigate('AgentDetails', {
+			data: agent,
 		});
+	};
 
 	const handleAgentListingNavigation = () =>
 		props.navigation.navigate('ListingProperties', {

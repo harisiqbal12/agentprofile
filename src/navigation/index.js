@@ -13,7 +13,6 @@ function Navigation() {
 	useEffect(() => {
 		return firebase.auth().onAuthStateChanged(user => {
 			if (!user) {
-				console.log('haris');
 				setLoaded(true);
 				setLoggedIn(false);
 			} else {

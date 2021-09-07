@@ -24,7 +24,6 @@ function HomescreenCard(props) {
 		id,
 	} = props.item;
 
-	console.log('images \n\n\n\n');
 
 	useEffect(() => {
 		if (props.agentProperty) {

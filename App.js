@@ -31,7 +31,6 @@ const firebaseConfig = {
 
 if (!firebase.apps.length) {
 	firebase.initializeApp(firebaseConfig);
-	console.log('firebase connected');
 }
 
 export default function App() {
@@ -40,7 +39,6 @@ export default function App() {
 	if (!fontLoaded) {
 		return null;
 	}
-	console.log('running');
 	return (
 		<>
 			<Provider store={store}>
@@ -52,11 +50,3 @@ export default function App() {
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	loadingContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-});

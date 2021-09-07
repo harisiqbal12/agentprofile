@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
 	SafeAreaView,
@@ -15,9 +15,12 @@ import { default as theme } from '../theme/custom-theme.json';
 
 function Settings(props) {
 	const { currentUser, currentAgent } = props;
+	const [isExpandedUserSettings, setIsExpandedUserSettings] = useState(true);
+	const [isExpanedProperties, setIsExpandedProperties] = useState(true);
+	const [isExpandedAccountSettings, setIsExpandedAccountSettings] =
+		useState(true);
 
 	const onLogout = async () => {
-		console.log('logging out');
 		await firebase.auth().signOut();
 	};
 
@@ -34,6 +37,14 @@ function Settings(props) {
 	const handleCreatePropertiesNavigation = () =>
 		props.navigation.navigate('CreateProperties');
 
+	const handleMyPropertiesNavigation = () =>
+		props.navigation.navigate('MyProperties');
+
+	const handleContactNavigation = () =>
+		props.navigation.navigate('Contact', {
+			agentEmail: 'support@agentprofile.com',
+		});
+
 	return (
 		<SafeAreaView style={styles.settingContainer}>
 			<ScrollView style={styles.scrollView}>
@@ -48,6 +59,8 @@ function Settings(props) {
 				<Layout style={styles.listContainer}>
 					<List.Section>
 						<List.Accordion
+							expanded={isExpandedUserSettings}
+							onPress={() => setIsExpandedUserSettings(!isExpandedUserSettings)}
 							titleStyle={styles.basicFontStylePrimary}
 							style={styles.userProfileList}
 							title='User Settings'
@@ -95,6 +108,8 @@ function Settings(props) {
 							/>
 						</List.Accordion>
 						<List.Accordion
+							expanded={isExpanedProperties}
+							onPress={() => setIsExpandedProperties(!isExpanedProperties)}
 							titleStyle={styles.basicFontStylePrimary}
 							style={styles.userProfileList}
 							title='Properties'
@@ -118,6 +133,7 @@ function Settings(props) {
 							<List.Item
 								title='My Properties'
 								titleStyle={styles.basicFontStyleSecondary}
+								onPress={handleMyPropertiesNavigation}
 								left={props => (
 									<List.Icon
 										{...props}
@@ -129,6 +145,10 @@ function Settings(props) {
 							/>
 						</List.Accordion>
 						<List.Accordion
+							expanded={isExpandedAccountSettings}
+							onPress={() =>
+								setIsExpandedAccountSettings(!isExpandedAccountSettings)
+							}
 							titleStyle={styles.basicFontStylePrimary}
 							style={styles.userProfileList}
 							title='Account Settings'
@@ -150,6 +170,7 @@ function Settings(props) {
 								)}
 							/>
 							<List.Item
+								onPress={handleContactNavigation}
 								title='Contact'
 								titleStyle={styles.basicFontStyleSecondary}
 								left={props => (

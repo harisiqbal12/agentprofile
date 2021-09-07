@@ -1,43 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import {
-	StyleSheet,
-	SafeAreaView,
-	TouchableOpacity,
-	StatusBar,
-	FlatList,
-} from 'react-native';
 import { Layout, Text } from '@ui-kitten/components';
+import { FlatList, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchAgentProperites } from '../redux/actions';
+import { default as theme } from '../theme/custom-theme.json';
+
 import Loader from './Loader';
 import PropertyCard from './PropertyCard';
 
-import { default as theme } from '../theme/custom-theme.json';
-
-function ListingProperties(props) {
-	const { agentID, displayName } = props.route.params;
-	const [loading, setLoading] = useState(false);
+function MyListing(props) {
+	const [loading, setLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
+	const currentUser = firebase.auth().currentUser;
 
 	useEffect(() => {
 		(async () => {
-			setLoading(true);
-
 			try {
-				await props.fetchAgentProperites(agentID);
+				setLoading(true);
+				await props.fetchAgentProperites(currentUser.uid);
+				setLoading(false);
 			} catch (err) {
 				console.log(err);
 			}
 		})();
-		setLoading(false);
 	}, []);
 
-	const handleRefreshing = async () => {
+	const handleRefresh = async () => {
 		try {
 			setIsRefreshing(true);
-			await props.fetchAgentProperites(agentID);
+			props.fetchAgentProperites(currentUser.uid);
 
 			setTimeout(() => {
 				setIsRefreshing(false);
@@ -51,7 +45,7 @@ function ListingProperties(props) {
 		return <Loader />;
 	}
 
-	if (!props.agentProperties.length > 0) {
+	if (!props.currentAgentProperties.length > 0) {
 		return (
 			<SafeAreaView style={styles.SafeAreaView}>
 				<Layout style={styles.errorContainer}>
@@ -66,21 +60,22 @@ function ListingProperties(props) {
 	return (
 		<SafeAreaView style={styles.SafeAreaView}>
 			<Layout style={styles.titleContainer}>
-				<Text style={styles.title}>{displayName} Properties</Text>
+				<Text style={styles.title}>My Listings</Text>
 			</Layout>
 			<FlatList
 				refreshing={isRefreshing}
-				onRefresh={handleRefreshing}
+				onRefresh={handleRefresh}
 				contentContainerStyle={{ padding: 16 }}
-				data={props.agentProperties}
+				data={props.currentAgentProperties}
 				renderItem={({ item }) => {
 					return (
-						<Layout>
-							<PropertyCard navigation={props.navigation} data={item} />
-						</Layout>
+						<PropertyCard
+							authenticatedUser={true}
+							navigation={props.navigation}
+							data={item}
+						/>
 					);
 				}}
-				keyExtractor={item => item.id}
 			/>
 		</SafeAreaView>
 	);
@@ -91,16 +86,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginTop: StatusBar.currentHeight,
 	},
-
 	titleContainer: {
-		margin: 25,
 		backgroundColor: 'transparent',
+		marginTop: 20,
 	},
 	title: {
-		fontWeight: 'bold',
-		color: theme['color-info-800'],
-		fontSize: 25,
 		textAlign: 'center',
+		fontSize: 25,
+		color: theme['color-info-800'],
+		fontWeight: 'bold',
 	},
 	errorContainer: {
 		flex: 1,
@@ -116,10 +110,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-	agentProperties: state.propertyState.agentProperties,
+	currentAgentProperties: state.propertyState.agentProperties,
 });
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators({ fetchAgentProperites }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListingProperties);
+export default connect(mapStateToProps, mapDispatchToProps)(MyListing);

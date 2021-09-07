@@ -22,7 +22,6 @@ export function fetchUser() {
 					dispatch({ type: USER_STATE_CHANGED, currentUser: users });
 				},
 				errorObject => {
-					console.log('The read failed: ' + errorObject.name);
 				}
 			);
 		} catch (err) {
@@ -36,10 +35,12 @@ export function fetchAgents() {
 		try {
 			let data = [];
 			const agentsRef = firebase.database().ref('agents');
+
 			agentsRef.on('child_added', snapshot => {
 				const agents = snapshot.val();
 				agents['id'] = snapshot.key;
 				data.push(agents);
+
 
 				dispatch({ type: ADDED_AGENTS, agents: data });
 			});
@@ -69,7 +70,6 @@ export function fetchCurrentAgent() {
 			const currentUser = firebase.auth().currentUser;
 			const agentsRef = firebase.database().ref('agents');
 			agentsRef.on('child_added', snapshot => {
-				// console.log(snapshot.key);
 				if (snapshot.key.includes(currentUser.uid)) {
 					dispatch({ type: CURRENT_AGENT, currentAgent: snapshot.val() });
 					return;
@@ -105,8 +105,8 @@ export function fetchAgentProperites(agentId) {
 	return async dispatch => {
 		try {
 			let data = [];
-			console.log('fetch agent properites ');
 			const propertyRef = firebase.database().ref(`properties/${agentId}`);
+
 			propertyRef.on('child_added', snapshot => {
 				const properites = snapshot.val();
 				properites['id'] = snapshot.key;
@@ -114,7 +114,9 @@ export function fetchAgentProperites(agentId) {
 				data.push(properites);
 
 				dispatch({ type: AGENT_PROPERTY_BY_ID, agentProperties: data });
+				return;
 			});
+			dispatch({ type: AGENT_PROPERTY_BY_ID, agentProperties: data });
 		} catch (err) {
 			console.log(err);
 		}
@@ -126,9 +128,6 @@ let data = [];
 export function fetchAgentProperty(agentId) {
 	return async dispatch => {
 		try {
-			console.log('\n\n\n\n');
-			console.log('fetchagents: ' + agentId);
-			console.log('haris: ' + agentId);
 			const propertyRef = firebase.database().ref(`properties/${agentId}`);
 			propertyRef.on('child_added', snapshot => {
 				data.push(snapshot.val());

@@ -9,19 +9,37 @@ function Login() {
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	const [emailError, setEmailError] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [isEmailError, setIsEmailError] = useState(false);
+	const [isPasswordError, setIsPasswordError] = useState(false);
+
 	const inputIcon = iconName => (
 		<Icon style={styles.inputIcon} fill='#616979' name={iconName} />
 	);
 
 	const handleLogin = async () => {
 		try {
-			setLoading(true);
-			console.log('loading state: ' + loading);
-			if (!email.length || !password.length) {
-				console.log('provide all fields please');
-				setLoading(false);
+			setEmailError('');
+			setPasswordError('');
+			setIsEmailError(false);
+			setIsPasswordError(false);
+
+			if (!email.length > 0) {
+				setEmailError('Please Provide Email field');
+				setIsEmailError(true);
+			}
+
+			if (!password.length > 0) {
+				setPasswordError('Please Provide Password field');
+				setIsPasswordError(true);
+			}
+
+			if (isPasswordError || isEmailError) {
 				return;
 			}
+
+			setLoading(true);
 
 			await firebase.auth().signInWithEmailAndPassword(email, password);
 			setEmail('');
@@ -41,14 +59,18 @@ function Login() {
 			</Layout>
 			<Layout style={styles.buttonContainer}>
 				<Input
+					label={emailError}
 					size='large'
 					style={styles.input}
 					placeholder='Email'
 					accessoryLeft={() => inputIcon('email')}
 					value={email}
+					status={isEmailError && 'danger'}
 					onChangeText={t => setEmail(t)}
 				/>
 				<Input
+					label={passwordError}
+					status={isPasswordError && 'danger'}
 					value={password}
 					secureTextEntry
 					size='large'
