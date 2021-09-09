@@ -11,10 +11,13 @@ import Property from '../../components/Property';
 import MyListing from '../../components/MyListing';
 import UpdateUserProperty from '../../components/UpdateUserProperty';
 import Contact from '../../components/Contact';
+import About from '../../components/About';
+import FavScreen from '../../components/FavScreen';
+import FavPropertyScreen from '../../components/FavPropertyScreen';
 
 const App = createStackNavigator();
 
-function AppNavigation(props) {
+function AppNavigation() {
 	return (
 		<App.Navigator
 			screenOptions={{
@@ -29,7 +32,10 @@ function AppNavigation(props) {
 			<App.Screen name='Property' component={Property} />
 			<App.Screen name='MyProperties' component={MyListing} />
 			<App.Screen name='UpdateUserProperty' component={UpdateUserProperty} />
+			<App.Screen name='About' component={About} />
 			<App.Screen name='Contact' component={Contact} />
+			<App.Screen name='FavScreen' component={FavScreen} />
+			<App.Screen name='FavPropertyScreen' component={FavPropertyScreen} />
 		</App.Navigator>
 	);
 }

@@ -38,19 +38,19 @@ function Register() {
 			if (!name.length > 0) {
 				setNameError('Please Provide Name Field');
 				setIsNameError(true);
-				gError(true);
+				setGError(true);
 			}
 
 			if (!email.length > 0) {
 				setEmailError('Please Provide Email Field');
 				setIsEmailError(true);
-				gError(true);
+				setGError(true);
 			}
 
 			if (!password.length > 0) {
 				setPasswordError('Please provide Password Field');
 				setIsPasswordError(true);
-				gError(true);
+				setGError(true);
 			}
 
 			setLoading(true);
@@ -77,8 +77,16 @@ function Register() {
 			setPassword(' ');
 			setLoading(false);
 		} catch (err) {
-			console.log(err);
 			setLoading(false);
+
+			if (err.message.startsWith('Password')) {
+				setPasswordError(err.message);
+				setIsPasswordError(true);
+				return;
+			}
+
+			setNameError(err.message);
+			setIsNameError(true);
 		}
 	};
 

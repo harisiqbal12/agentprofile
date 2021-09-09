@@ -19,6 +19,7 @@ import { Modal, Portal, Provider, Card } from 'react-native-paper';
 import { fetchAgentProperites } from '../redux/actions/index';
 import SpinnerSmall from './spinnerSmall';
 import { default as theme } from '../theme/custom-theme.json';
+import NotFound from './Notfound';
 
 function CreateProperties(props) {
 	const [selectBedrooms, setSelectBedrooms] = useState('');
@@ -183,7 +184,7 @@ function CreateProperties(props) {
 
 	const uploadAndSaveData = async () => {
 		try {
-			if (!propertyName.length < 20) {
+			if (propertyName.length > 32) {
 				throw new Error('Property Name Too Big');
 			}
 
@@ -207,6 +208,14 @@ function CreateProperties(props) {
 				!propertyPrice.length > 0
 			) {
 				throw new Error('Please provide all the details');
+			}
+
+			if (!parseInt(propertyPrice)) {
+				throw new Error('Enter A Valid Price');
+			}
+
+			if (!parseInt(propertyArea)) {
+				throw new Error('Enter A Valid Price');
 			}
 
 			images.push(imageOne, imageTwo, imageThree);
@@ -447,6 +456,10 @@ function CreateProperties(props) {
 		return <Text>Please provide Gallery Permission</Text>;
 	}
 
+	if (!props.currentAgent) {
+		return <NotFound title='Register For A Agent First' />;
+	}
+
 	return (
 		<Provider>
 			<SafeAreaView style={styles.SafeAreaView}>
@@ -516,7 +529,9 @@ function CreateProperties(props) {
 								value={propertyAddress}
 								onChangeText={t => setPropertyAddress(t)}
 							/>
-							<Text style={styles.inputPlaceholder}>Enter property price</Text>
+							<Text style={styles.inputPlaceholder}>
+								Enter property price eg, 20000
+							</Text>
 							<Input
 								style={styles.input}
 								placeholder='Property Price'
@@ -555,6 +570,7 @@ function CreateProperties(props) {
 									onValueChange={(itemValue, itemIndex) =>
 										setSelectBedrooms(itemValue)
 									}>
+									<Picker.Item key='0' label='0' value='0' />
 									<Picker.Item key='1' label='1' value='1' />
 									<Picker.Item key='2' label='2' value='2' />
 									<Picker.Item key='3' label='3' value='3' />
@@ -564,18 +580,17 @@ function CreateProperties(props) {
 									<Picker.Item key='7' label='7' value='7' />
 									<Picker.Item key='8' label='8' value='8' />
 									<Picker.Item key='9' label='9' value='9' />
-									<Picker.Item key='10' label='10' value='10' />
 								</Picker>
 							</Layout>
 							<Text style={styles.inputPlaceholder}>Select Bathrooms</Text>
 							<Layout style={styles.selectContainer}>
 								<Picker
-									label='s'
 									style={styles.bedroomPicker}
 									selectedValue={selectBathrooms}
 									onValueChange={(itemValue, itemIndex) =>
 										setSelectedBathrooms(itemValue)
 									}>
+									<Picker.Item key='0' label='0' value='0' />
 									<Picker.Item key='1' label='1' value='1' />
 									<Picker.Item key='2' label='2' value='2' />
 									<Picker.Item key='3' label='3' value='3' />
@@ -585,18 +600,17 @@ function CreateProperties(props) {
 									<Picker.Item key='7' label='7' value='7' />
 									<Picker.Item key='8' label='8' value='8' />
 									<Picker.Item key='9' label='9' value='9' />
-									<Picker.Item key='10' label='10' value='10' />
 								</Picker>
 							</Layout>
 							<Text style={styles.inputPlaceholder}>Select Garage</Text>
 							<Layout style={styles.selectContainer}>
 								<Picker
-									label='s'
 									style={styles.bedroomPicker}
 									selectedValue={selectGarage}
 									onValueChange={(itemValue, itemIndex) =>
 										setSelectedGarage(itemValue)
 									}>
+									<Picker.Item key='0' label='0' value='0' />
 									<Picker.Item key='1' label='1' value='1' />
 									<Picker.Item key='2' label='2' value='2' />
 									<Picker.Item key='3' label='3' value='3' />
@@ -606,7 +620,6 @@ function CreateProperties(props) {
 									<Picker.Item key='7' label='7' value='7' />
 									<Picker.Item key='8' label='8' value='8' />
 									<Picker.Item key='9' label='9' value='9' />
-									<Picker.Item key='10' label='10' value='10' />
 								</Picker>
 							</Layout>
 							<Text style={styles.inputPlaceholder}>Select Features</Text>
@@ -786,11 +799,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		color: '#fff',
 		borderWidth: 1,
-		borderColor: '#FF8E33',
+		borderColor: theme['color-primary-400'],
 		marginBottom: 20,
 	},
 	bedroomPicker: {
-		color: '#FF8E33',
+		color: theme['color-primary-400'],
 		fontSize: 12,
 		fontWeight: 'bold',
 		fontFamily: 'Roboto_400Regular',
@@ -837,6 +850,10 @@ const styles = StyleSheet.create({
 	},
 });
 
+const mapStateToProps = state => ({
+	currentAgent: state.agentState.currentAgent,
+});
+
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
@@ -845,4 +862,4 @@ const mapDispatchToProps = dispatch =>
 		dispatch
 	);
 
-export default connect(null, mapDispatchToProps)(CreateProperties);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateProperties);

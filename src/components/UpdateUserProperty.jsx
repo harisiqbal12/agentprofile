@@ -4,9 +4,10 @@ import { Layout, Text } from '@ui-kitten/components';
 import CreateProperties from './CreateProperties';
 
 function UpdateUserProperty(props) {
-	return (
-		<CreateProperties title={'Update Property'} data={props.route.params.data} />
-	);
+	const { data } = props.route.params;
+	console.log(data);
+
+	return <CreateProperties title={'Update Property'} data={data} />;
 }
 
 export default UpdateUserProperty;

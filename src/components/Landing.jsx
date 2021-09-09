@@ -40,7 +40,9 @@ const styles = StyleSheet.create({
 	},
 
 	titleContainer: {
-		flex: 0.4,
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 
 	title: {
@@ -58,7 +60,9 @@ const styles = StyleSheet.create({
 	},
 
 	buttonContainer: {
-		flex: 0.1,
+		flex: 0.5,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 
 	button: {

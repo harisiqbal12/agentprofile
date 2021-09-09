@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Layout,
 	Text as KittentText,
@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 
 import { default as theme } from '../theme/custom-theme.json';
 
-import { fetchAgentProperites } from '../redux/actions/index';
+import { fetchAgentProperites, fetchFavProperty } from '../redux/actions/index';
 
 function PropertyCard(props) {
 	const [visible, setVisible] = React.useState(false);
@@ -22,12 +22,17 @@ function PropertyCard(props) {
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
 
+	useEffect(() => {
+		props.fetchFavProperty();
+	}, []);
+
 	const { data } = props;
 	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
 
 	const handlePropertyNavigation = () =>
 		props.navigation.navigate('Property', {
 			data: data,
+			favProperties: props.favProperties,
 		});
 
 	const handleUpdatePropertyNavigation = () =>
@@ -37,6 +42,9 @@ function PropertyCard(props) {
 
 	const handleDelete = async () => {
 		try {
+			let cancel = false;
+
+			if (cancel) return;
 			const propertyRef = firebase.database().ref('properties');
 			const agentRef = firebase.database().ref('agents');
 			const currentUser = firebase.auth().currentUser;
@@ -50,6 +58,9 @@ function PropertyCard(props) {
 			await props.fetchAgentProperites(currentUser.uid);
 
 			hideModal();
+			return () => {
+				cancel = true;
+			};
 		} catch (err) {
 			console.log(err);
 		}
@@ -66,7 +77,7 @@ function PropertyCard(props) {
 					<Card.Title
 						titleStyle={{
 							color: theme['color-primary-100'],
-							fontSize: 18,
+							fontSize: 15,
 							fontWeight: 'bold',
 							fontFamily: 'Roboto_400Regular',
 						}}
@@ -225,6 +236,6 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators({ fetchAgentProperites }, dispatch);
+	bindActionCreators({ fetchAgentProperites, fetchFavProperty }, dispatch);
 
 export default connect(null, mapDispatchToProps)(PropertyCard);

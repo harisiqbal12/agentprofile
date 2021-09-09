@@ -8,19 +8,26 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
-import AgentCard from './AgentCard';
 import { bindActionCreators } from 'redux';
+import find from 'array-find';
+
 import { fetchAgents } from '../redux/actions';
-import firebase from 'firebase';
+import AgentCard from './AgentCard';
+import Loader from './Loader';
 
 function Agents(props) {
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [searchData, setSearchData] = useState(null);
 	const [searchCompleted, setSearchCompleted] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const { currentAgent } = props;
 
-	useEffect(() => {}, [searchData]);
+	useEffect(() => {
+		if (currentAgent.length > 0) {
+			setLoading(false);
+		}
+	}, [currentAgent]);
 
 	const handleListingPropertiessNavigaiton = item =>
 		props.navigation.navigate('AgentDetails', {
@@ -40,19 +47,28 @@ function Agents(props) {
 	const search = async text => {
 		try {
 			let data = [];
-			const agentsRef = firebase.database().ref('agents');
-			const agent = agentsRef
-				.orderByChild('displayName')
-				.equalTo(text)
-				.on('child_added', snaphot => {
-					console.log(snaphot.val());
-					const res = snaphot.val();
-					res['id'] = snaphot.key;
-					data.push(res);
-
+			console.log(currentAgent);
+			find(currentAgent, (element, index, array) => {
+				if (element.displayName.includes(text)) {
+					data.push(element);
 					setSearchData(data);
-					setSearchCompleted(true);
-				});
+					setSearchCompleted(data);
+				}
+			});
+
+			// const agentsRef = firebase.database().ref('agents');
+			// const agent = agentsRef
+			// 	.orderByChild('displayName')
+			// 	.equalTo(text)
+			// 	.on('child_added', snaphot => {
+			// 		console.log(snaphot.val());
+			// 		const res = snaphot.val();
+			// 		res['id'] = snaphot.key;
+			// 		data.push(res);
+
+			// 		setSearchData(data);
+			// 		setSearchCompleted(true);
+			// 	});
 
 			if (!text.length > 0) {
 				setSearchCompleted(false);
@@ -61,6 +77,10 @@ function Agents(props) {
 			console.log(err);
 		}
 	};
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<SafeAreaView style={styles.agentContainer}>

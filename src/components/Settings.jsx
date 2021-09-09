@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import {
-	SafeAreaView,
-	StyleSheet,
-	StatusBar,
-	ScrollView,
-	TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { Text, Layout, Avatar, Icon, Button, Card } from '@ui-kitten/components';
 import { List } from 'react-native-paper';
+import Loader from './Loader';
 
 import firebase from 'firebase';
 import { default as theme } from '../theme/custom-theme.json';
@@ -19,6 +14,15 @@ function Settings(props) {
 	const [isExpanedProperties, setIsExpandedProperties] = useState(true);
 	const [isExpandedAccountSettings, setIsExpandedAccountSettings] =
 		useState(true);
+
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (currentUser) {
+			setLoading(false);
+			console.log(currentAgent)
+		}
+	}, [currentUser]);
 
 	const onLogout = async () => {
 		await firebase.auth().signOut();
@@ -35,15 +39,33 @@ function Settings(props) {
 		});
 
 	const handleCreatePropertiesNavigation = () =>
-		props.navigation.navigate('CreateProperties');
+		props.navigation.navigate('CreateProperties', {
+			currentAgent: props.currentAgent,
+		});
 
 	const handleMyPropertiesNavigation = () =>
 		props.navigation.navigate('MyProperties');
 
 	const handleContactNavigation = () =>
 		props.navigation.navigate('Contact', {
-			agentEmail: 'support@agentprofile.com',
+			agentEmail: 'agentprofileinfo@gmail.com',
 		});
+
+	const handleAboutNavigation = () => props.navigation.navigate('About');
+
+	const handleFavAgentsNavigation = () =>
+		props.navigation.navigate('FavScreen', {
+			data: props.favAgents,
+			agentProperty: props.agentProperty,
+		});
+
+	const handleFavPropertyNavigation = () => {
+		props.navigation.navigate('FavPropertyScreen');
+	};
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<SafeAreaView style={styles.settingContainer}>
@@ -52,7 +74,7 @@ function Settings(props) {
 					<Avatar
 						style={styles.userProfile}
 						size='giant'
-						source={require('../../assets/man.png')}
+						source={require('../../assets/weblogo.png')}
 					/>
 					<Text style={styles.userProfileTitle}>@ {currentUser.displayName}</Text>
 				</Layout>
@@ -95,7 +117,8 @@ function Settings(props) {
 								)}
 							/>
 							<List.Item
-								title='Favourites'
+								onPress={handleFavAgentsNavigation}
+								title='Favourite Agents'
 								titleStyle={styles.basicFontStyleSecondary}
 								left={props => (
 									<List.Icon
@@ -143,6 +166,19 @@ function Settings(props) {
 									/>
 								)}
 							/>
+							<List.Item
+								onPress={handleFavPropertyNavigation}
+								title='Favourite Properties'
+								titleStyle={styles.basicFontStyleSecondary}
+								left={props => (
+									<List.Icon
+										{...props}
+										icon='heart'
+										color='#fff'
+										style={styles.itemIcons}
+									/>
+								)}
+							/>
 						</List.Accordion>
 						<List.Accordion
 							expanded={isExpandedAccountSettings}
@@ -185,6 +221,7 @@ function Settings(props) {
 							<List.Item
 								title='About us'
 								titleStyle={styles.basicFontStyleSecondary}
+								onPress={handleAboutNavigation}
 								left={props => (
 									<List.Icon
 										{...props}
@@ -226,7 +263,6 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 	},
 	userProfile: {
-		backgroundColor: '#fff',
 		minHeight: 60,
 		minWidth: 60,
 	},
@@ -262,96 +298,8 @@ const styles = StyleSheet.create({
 mapStateToProps = store => ({
 	currentUser: store.userState.currentUser,
 	currentAgent: store.agentState.currentAgent,
+	favAgents: store.agentState.agentsFave,
+	agentProperty: store.propertyState.agentProperty,
 });
 
 export default connect(mapStateToProps)(Settings);
-
-// <Layout style={styles.userProfileContainer}>
-// 					<Avatar
-// 						style={styles.userProfile}
-// 						size='giant'
-// 						source={require('../../assets/man.png')}
-// 					/>
-// 					<Text style={styles.userProfileTitle}>@ {currentUser.displayName}</Text>
-// 				</Layout>
-
-// 				<Layout style={styles.userInforContainer}>
-// 					<Card style={styles.cardProfile} status='primary'>
-// 						<TouchableOpacity onPress={hanldeProfileNavigate}>
-// 							<Icon name='people' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Profile</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity onPress={handleCreatePropertiesNavigation}>
-// 							<Icon name='plus-square' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={{ ...styles.cardTitle, fontSize: 10 }}>
-// 								Create Properties
-// 							</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity onPress={handleAgentProfileNavigation}>
-// 							<Icon name='person' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Agent</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity>
-// 							<Icon name='heart' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Favourites</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity>
-// 							<Icon name='email' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Contact</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card style={styles.cardProfile} status='primary'>
-// 						<TouchableOpacity onPress={onLogout}>
-// 							<Icon name='power' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Logout</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity>
-// 							<Icon name='phone-call' fill='#fff' style={styles.cardIcon} />
-// 							<Text style={styles.cardTitle}>Support</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Card
-// 						onPress={handleCardPress}
-// 						style={styles.cardProfile}
-// 						status='primary'>
-// 						<TouchableOpacity>
-// 							<Icon
-// 								name='question-mark-circle'
-// 								fill='#fff'
-// 								style={styles.cardIcon}
-// 							/>
-// 							<Text style={styles.cardTitle}>About us</Text>
-// 						</TouchableOpacity>
-// 					</Card>
-// 					<Layout>
-// 						<Text style={{ ...styles.copyright, marginTop: 50 }}>
-// 							All Rights Reserved 2020
-// 						</Text>
-// 					</Layout>
-// 				</Layout>

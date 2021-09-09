@@ -1,3 +1,6 @@
+import firebase from 'firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
 	USER_STATE_CHANGED,
 	ADDED_AGENTS,
@@ -6,8 +9,15 @@ import {
 	AGENT_PROPERTY,
 	AGENT_BY_ID,
 	AGENT_PROPERTY_BY_ID,
+	AGENT_FAV_SAVE,
+	AGENT_FAV_FETCH,
+	AGENT_FAV_REMOVE,
+	AGENT_FAV_FROM_DATABASE,
+	PROPERTY_FAV_FETCH,
+	PROPERTY_FAV_SAVE,
+	PROPERTY_FAV_REMOVE,
+	PROPERTY_FAV_FROM_DATABASE,
 } from '../constants/index';
-import firebase from 'firebase';
 
 export function fetchUser() {
 	return async dispatch => {
@@ -21,8 +31,7 @@ export function fetchUser() {
 					const users = snapshot.child(firebase.auth().currentUser.uid).val();
 					dispatch({ type: USER_STATE_CHANGED, currentUser: users });
 				},
-				errorObject => {
-				}
+				errorObject => {}
 			);
 		} catch (err) {
 			console.log(err);
@@ -40,7 +49,6 @@ export function fetchAgents() {
 				const agents = snapshot.val();
 				agents['id'] = snapshot.key;
 				data.push(agents);
-
 
 				dispatch({ type: ADDED_AGENTS, agents: data });
 			});
@@ -68,12 +76,12 @@ export function fetchCurrentAgent() {
 	return async dispatch => {
 		try {
 			const currentUser = firebase.auth().currentUser;
+			console.log('current user');
 			const agentsRef = firebase.database().ref('agents');
-			agentsRef.on('child_added', snapshot => {
-				if (snapshot.key.includes(currentUser.uid)) {
-					dispatch({ type: CURRENT_AGENT, currentAgent: snapshot.val() });
-					return;
-				}
+			agentsRef.child(currentUser.uid).on('value', snapshot => {
+				console.log(snapshot.val());
+				const currentAgent = snapshot.val();
+				dispatch({ type: CURRENT_AGENT, currentAgent: currentAgent });
 			});
 		} catch (err) {
 			console.log(err);
@@ -90,7 +98,10 @@ export function fetchAllProperties() {
 
 			propertyRef.on('child_added', snapshot => {
 				allProperties.child(snapshot.key).on('child_added', prp => {
-					data.push(prp.val());
+					const value = prp.val();
+					value['id'] = prp.key;
+
+					data.push(value);
 
 					dispatch({ type: CURRENT_PROPERTIES, currentProperties: data });
 				});
@@ -117,6 +128,182 @@ export function fetchAgentProperites(agentId) {
 				return;
 			});
 			dispatch({ type: AGENT_PROPERTY_BY_ID, agentProperties: data });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+let saveAgentsArray = [];
+
+export function fetchFaveAgents() {
+	return async dispatch => {
+		try {
+			const values = await AsyncStorage.getItem('@favouritesAgentId');
+			saveAgentsArray = JSON.parse(values);
+
+			if (values !== null) {
+				dispatch({ type: AGENT_FAV_FETCH, data: saveAgentsArray });
+				return;
+			}
+			dispatch({ type: AGENT_FAV_FETCH, data: [] });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function saveFavAgent(id) {
+	return async dispatch => {
+		try {
+			const check = saveAgentsArray.find(itemId => itemId === id);
+			if (!check) {
+				saveAgentsArray.push(id);
+			}
+
+			const jsonVlalue = JSON.stringify(saveAgentsArray);
+			await AsyncStorage.setItem('@favouritesAgentId', jsonVlalue);
+			dispatch({ type: AGENT_FAV_SAVE });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function removeSaveAgent(id) {
+	return async dispatch => {
+		try {
+			const updatedArray = saveAgentsArray.filter(itemId => itemId !== id);
+			saveAgentsArray = updatedArray;
+
+			const jsonVlalue = JSON.stringify(saveAgentsArray);
+			await AsyncStorage.setItem('@favouritesAgentId', jsonVlalue);
+
+			dispatch({ type: AGENT_FAV_REMOVE });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchFavAgentFromDatabase(id) {
+	let favAgentsFromDatabase = [];
+
+	return async dispatch => {
+		try {
+			const agentsRef = firebase.database().ref('agents');
+			id.forEach(itemId => {
+				agentsRef.child(itemId).on('value', snapshot => {
+					const agent = snapshot.val();
+					agent['id'] = snapshot.key;
+
+					favAgentsFromDatabase.push(agent);
+				});
+			});
+
+			dispatch({
+				type: AGENT_FAV_FROM_DATABASE,
+				data: favAgentsFromDatabase,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+let propertyFavArray = [];
+
+export function fetchFavProperty() {
+	return async dispatch => {
+		try {
+			console.log('fetch from storage');
+			const values = await AsyncStorage.getItem('@propertyFavArray');
+			propertyFavArray = JSON.parse(values);
+			if (propertyFavArray != null) {
+				dispatch({ type: PROPERTY_FAV_FETCH, data: propertyFavArray });
+				return;
+			}
+
+			dispatch({ type: PROPERTY_FAV_FETCH, data: [] });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function faveSaveProperty(id) {
+	return async dispatch => {
+		try {
+			console.log('action action \n\n\n');
+			let isExist = false;
+
+			console.log('propertyLength: ' + propertyFavArray.length);
+
+			if (propertyFavArray.length > 0) {
+				isExist = propertyFavArray.find(
+					itemId => itemId.propertyID === id.propertyID
+				);
+			}
+
+			console.log(isExist);
+
+			if (!isExist) {
+				propertyFavArray.push(id);
+			}
+
+			console.log(propertyFavArray);
+
+			const values = JSON.stringify(propertyFavArray);
+
+			await AsyncStorage.setItem('@propertyFavArray', values);
+
+			dispatch({ type: PROPERTY_FAV_SAVE });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function faveRemoveProperty(id) {
+	return async dispatch => {
+		try {
+			console.log('removing..');
+			const updatedArray = propertyFavArray.filter(
+				itemId => itemId.propertyID !== id.propertyID
+			);
+
+			propertyFavArray = updatedArray;
+			console.log(propertyFavArray);
+
+			const values = JSON.stringify(propertyFavArray);
+			await AsyncStorage.setItem('@propertyFavArray', values);
+
+			dispatch({ type: PROPERTY_FAV_REMOVE });
+		} catch (err) {}
+	};
+}
+
+export function fetchFavPropertiesFromDatabase(data) {
+	let favPropertiesFromDatabase = [];
+	return async dispatch => {
+		try {
+			const properitesRef = firebase.database().ref('properties');
+			// console.log('fetch properties from database')
+			data.forEach(item => {
+				properitesRef
+					.child(item.authorID)
+					.child(item.propertyID)
+					.on('value', snapshot => {
+						// console.log(snapshot.val());
+						const values = snapshot.val();
+						values['id'] = snapshot.key;
+						favPropertiesFromDatabase.push(values);
+
+						dispatch({
+							type: PROPERTY_FAV_FROM_DATABASE,
+							data: favPropertiesFromDatabase,
+						});
+					});
+			});
 		} catch (err) {
 			console.log(err);
 		}

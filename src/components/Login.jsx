@@ -45,9 +45,11 @@ function Login() {
 			setEmail('');
 			setPassword('');
 		} catch (err) {
+			console.log(err.message);
 			setLoading(false);
-			console.log('error');
-			console.log(err);
+			setIsPasswordError(true);
+			setPasswordError(err.message)
+
 		}
 	};
 

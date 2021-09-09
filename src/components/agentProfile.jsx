@@ -79,6 +79,7 @@ function AgentProfile(props) {
 					profileURL: profiileImageURL ? profiileImageURL : profileURL,
 					listingProperties: 0,
 				});
+				setLoading(false);
 
 				return;
 			}
@@ -93,11 +94,9 @@ function AgentProfile(props) {
 				profileURL: profiileImageURL ? profiileImageURL : profileURL,
 			});
 
-
-
 			await props.fetchAgents();
-			await props.fetchCurrentAgent();
 			setLoading(false);
+			await props.fetchCurrentAgent();
 		} catch (err) {
 			console.log(err);
 		}
@@ -112,7 +111,6 @@ function AgentProfile(props) {
 				quality: 0.4,
 			});
 
-
 			if (!result.cancelled) {
 				setImage(result.uri);
 				setProfileURL(result.uri);
@@ -126,8 +124,7 @@ function AgentProfile(props) {
 		console.log(snapshot);
 	};
 
-	const taskProgress = snapshot => {
-	};
+	const taskProgress = snapshot => {};
 
 	const handleUploadImage = async () => {
 		try {
@@ -156,7 +153,6 @@ function AgentProfile(props) {
 			} else {
 				handleSaveButton();
 			}
-
 		} catch (err) {
 			console.log(err);
 		}

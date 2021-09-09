@@ -13,18 +13,24 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchAgentById } from '../redux/actions';
+import {
+	fetchAgentById,
+	faveSaveProperty,
+	faveRemoveProperty,
+	fetchFavProperty,
+} from '../redux/actions';
 import Loader from './Loader';
 import AgentCard from './AgentCard';
 
 import { default as theme } from '../theme/custom-theme.json';
 
 function Property(props) {
-	const [pressedIcon, setPressedIcon] = useState(false);
+	const [fav, setFav] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	const { data } = props.route.params;
 	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
+
 
 	useEffect(() => {
 		setLoading(true);
@@ -38,10 +44,36 @@ function Property(props) {
 		})();
 	}, []);
 
+	useEffect(() => {
+		let favPropertyData = {};
+		const { authorID, id } = data;
+		favPropertyData['authorID'] = authorID;
+		favPropertyData['propertyID'] = id;
+		if (fav) {
+			props.faveSaveProperty(favPropertyData);
+		}
+		if (fav === false) {
+			props.faveRemoveProperty(favPropertyData);
+			props.fetchFavProperty();
+			setFav(false);
+		}
+	}, [fav]);
+
+	useEffect(() => {
+		const { favProperties } = props.route.params;
+		if (favProperties) {
+			favProperties.forEach(item => {
+				if (item.propertyID === data.id) {
+					console.log('matched matched');
+					setFav(true);
+				}
+			});
+		}
+	}, [props.route.params.favProperties]);
+
 	const handleAgentProfileNavigation = () => {
 		let agent = props.agentByID;
 		agent['id'] = data.authorID;
-
 
 		return props.navigation.navigate('AgentDetails', {
 			data: agent,
@@ -52,6 +84,11 @@ function Property(props) {
 		props.navigation.navigate('ListingProperties', {
 			agentID: data.authorID,
 			displayName: props.agentByID.displayName,
+		});
+
+	const handleContactNavigation = () =>
+		props.navigation.navigate('Contact', {
+			agentEmail: props.agentByID.email,
 		});
 
 	if (loading) {
@@ -87,11 +124,11 @@ function Property(props) {
 					</Layout>
 					<Layout style={styles.contentContainer}>
 						<Layout style={styles.contentContainerText}>
-							<TouchableOpacity onPress={e => setPressedIcon(!pressedIcon)}>
+							<TouchableOpacity onPress={e => setFav(!fav)}>
 								<MaterialCommunityIcons
 									color={theme['color-primary-400']}
 									size={24}
-									name={pressedIcon ? 'heart' : 'heart-outline'}
+									name={fav ? 'heart' : 'heart-outline'}
 								/>
 							</TouchableOpacity>
 						</Layout>
@@ -307,7 +344,11 @@ function Property(props) {
 											style={styles.button}>
 											My Listing
 										</Button>
-										<Button style={styles.button}>Contact</Button>
+										<Button
+											onPress={handleContactNavigation}
+											style={styles.button}>
+											Contact
+										</Button>
 									</Layout>
 								</Layout>
 							) : (
@@ -490,7 +531,10 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators({ fetchAgentById }, dispatch);
+	bindActionCreators(
+		{ fetchAgentById, faveSaveProperty, faveRemoveProperty, fetchFavProperty },
+		dispatch
+	);
 
 const mapStateToProps = state => ({
 	agentByID: state.agentState.agentByID,

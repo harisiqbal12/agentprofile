@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import { fetchAgentProperites } from '../redux/actions';
 import Loader from './Loader';
 import PropertyCard from './PropertyCard';
+import NotFound from './Notfound'
 
 import { default as theme } from '../theme/custom-theme.json';
 
@@ -53,13 +54,7 @@ function ListingProperties(props) {
 
 	if (!props.agentProperties.length > 0) {
 		return (
-			<SafeAreaView style={styles.SafeAreaView}>
-				<Layout style={styles.errorContainer}>
-					<Layout style={styles.textContainer}>
-						<Text style={{ ...styles.title, color: '#fff' }}>No Listing</Text>
-					</Layout>
-				</Layout>
-			</SafeAreaView>
+		<NotFound title='No Listing Properties Found' />
 		);
 	}
 

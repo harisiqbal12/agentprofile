@@ -10,6 +10,7 @@ import { default as theme } from '../theme/custom-theme.json';
 
 import Loader from './Loader';
 import PropertyCard from './PropertyCard';
+import NotFound from './Notfound';
 
 function MyListing(props) {
 	const [loading, setLoading] = useState(true);
@@ -46,15 +47,7 @@ function MyListing(props) {
 	}
 
 	if (!props.currentAgentProperties.length > 0) {
-		return (
-			<SafeAreaView style={styles.SafeAreaView}>
-				<Layout style={styles.errorContainer}>
-					<Layout style={styles.textContainer}>
-						<Text style={{ ...styles.title, color: '#fff' }}>No Listing</Text>
-					</Layout>
-				</Layout>
-			</SafeAreaView>
-		);
+		return <NotFound title='No Current Listing' />;
 	}
 
 	return (

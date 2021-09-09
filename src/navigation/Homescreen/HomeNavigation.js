@@ -9,6 +9,8 @@ import {
 	fetchAgents,
 	fetchCurrentAgent,
 	fetchAllProperties,
+	fetchFaveAgents,
+	fetchFavProperty
 } from '../../redux/actions/index';
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
@@ -24,6 +26,8 @@ function HomeNavigation({
 	fetchAgents,
 	fetchCurrentAgent,
 	fetchAllProperties,
+	fetchFaveAgents,
+	fetchFavProperty,
 }) {
 	useEffect(() => {
 		let cancel = false;
@@ -33,6 +37,8 @@ function HomeNavigation({
 		fetchAgents();
 		fetchCurrentAgent();
 		fetchAllProperties();
+		fetchFaveAgents();
+		fetchFavProperty();
 
 		return () => {
 			cancel = true;
@@ -99,7 +105,14 @@ function HomeNavigation({
 
 const mapDispatchtoProps = dispatch =>
 	bindActionCreators(
-		{ fetchUser, fetchAgents, fetchCurrentAgent, fetchAllProperties },
+		{
+			fetchUser,
+			fetchAgents,
+			fetchCurrentAgent,
+			fetchAllProperties,
+			fetchFaveAgents,
+			fetchFavProperty
+		},
 		dispatch
 	);
 
