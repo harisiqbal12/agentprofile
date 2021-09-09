@@ -64,7 +64,6 @@ function Property(props) {
 		if (favProperties) {
 			favProperties.forEach(item => {
 				if (item.propertyID === data.id) {
-					console.log('matched matched');
 					setFav(true);
 				}
 			});

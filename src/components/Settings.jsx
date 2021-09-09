@@ -20,7 +20,6 @@ function Settings(props) {
 	useEffect(() => {
 		if (currentUser) {
 			setLoading(false);
-			console.log(currentAgent)
 		}
 	}, [currentUser]);
 

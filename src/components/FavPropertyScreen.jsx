@@ -22,18 +22,14 @@ function FavPropertyScreen(props) {
 	}, []);
 
 	useEffect(() => {
-		console.log('fav screen');
-		console.log(props.favProperties.length);
 		if (props.favProperties.length > 0) {
 			props.fetchFavPropertiesFromDatabase(props.favProperties);
 		} else {
-			console.log('false');
 			setProperties([]);
 		}
 	}, [props.favProperties]);
 
 	useEffect(() => {
-		console.log('properties setted');
 		setProperties(props.favPropertiesFromDatabase);
 		setLoading(false);
 	}, [props.favPropertiesFromDatabase]);

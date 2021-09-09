@@ -24,9 +24,6 @@ function Properties(props) {
 	}, [currentProperties]);
 	useEffect(() => {
 		setFavProperties(props.favProperties);
-		console.log('properties screen');
-		console.log(props.favProperties);
-		console.log('properties screen');
 	}, [props.favProperties]);
 
 	const handleSearch = async text => {

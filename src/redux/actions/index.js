@@ -76,10 +76,8 @@ export function fetchCurrentAgent() {
 	return async dispatch => {
 		try {
 			const currentUser = firebase.auth().currentUser;
-			console.log('current user');
 			const agentsRef = firebase.database().ref('agents');
 			agentsRef.child(currentUser.uid).on('value', snapshot => {
-				console.log(snapshot.val());
 				const currentAgent = snapshot.val();
 				dispatch({ type: CURRENT_AGENT, currentAgent: currentAgent });
 			});
@@ -215,7 +213,6 @@ let propertyFavArray = [];
 export function fetchFavProperty() {
 	return async dispatch => {
 		try {
-			console.log('fetch from storage');
 			const values = await AsyncStorage.getItem('@propertyFavArray');
 			propertyFavArray = JSON.parse(values);
 			if (propertyFavArray != null) {
@@ -233,10 +230,8 @@ export function fetchFavProperty() {
 export function faveSaveProperty(id) {
 	return async dispatch => {
 		try {
-			console.log('action action \n\n\n');
 			let isExist = false;
 
-			console.log('propertyLength: ' + propertyFavArray.length);
 
 			if (propertyFavArray.length > 0) {
 				isExist = propertyFavArray.find(
@@ -244,13 +239,11 @@ export function faveSaveProperty(id) {
 				);
 			}
 
-			console.log(isExist);
 
 			if (!isExist) {
 				propertyFavArray.push(id);
 			}
 
-			console.log(propertyFavArray);
 
 			const values = JSON.stringify(propertyFavArray);
 
@@ -266,13 +259,11 @@ export function faveSaveProperty(id) {
 export function faveRemoveProperty(id) {
 	return async dispatch => {
 		try {
-			console.log('removing..');
 			const updatedArray = propertyFavArray.filter(
 				itemId => itemId.propertyID !== id.propertyID
 			);
 
 			propertyFavArray = updatedArray;
-			console.log(propertyFavArray);
 
 			const values = JSON.stringify(propertyFavArray);
 			await AsyncStorage.setItem('@propertyFavArray', values);

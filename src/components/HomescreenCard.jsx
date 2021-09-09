@@ -51,7 +51,6 @@ function HomescreenCard(props) {
 	useEffect(() => {
 		setFavIds(props.agentsFaveIds);
 		if (props.agentsFaveIds) {
-			console.log(props.agentsFaveIds.length);
 		}
 	}, [props.agentsFaveIds]);
 

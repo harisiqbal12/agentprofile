@@ -47,7 +47,6 @@ function Agents(props) {
 	const search = async text => {
 		try {
 			let data = [];
-			console.log(currentAgent);
 			find(currentAgent, (element, index, array) => {
 				if (element.displayName.includes(text)) {
 					data.push(element);
