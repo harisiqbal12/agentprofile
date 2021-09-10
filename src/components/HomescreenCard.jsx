@@ -5,11 +5,12 @@ import { Card } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import firebase from 'firebase';
+
 import { default as theme } from '../theme/custom-theme.json';
 import {
-	saveFavAgent,
-	removeSaveAgent,
-	fetchFaveAgents,
+	// fetchFaveAgents,
+	fetchFavAgents,
 } from '../redux/actions/index';
 
 function HomescreenCard(props) {
@@ -19,8 +20,11 @@ function HomescreenCard(props) {
 		'https://indiatownship.com/wp-content/uploads/2020/10/no-image.png',
 	]);
 
-	const [fav, setFav] = useState(null);
-	const [favIds, setFavIds] = useState(props.agentsFaveIds);
+	const [fav, setFav] = useState(false);
+	const [saved, setSaved] = useState(false);
+	const [favKey, setFavKey] = useState(null);
+
+	const favouritesRef = firebase.database().ref('favourites');
 
 	const {
 		displayName,
@@ -35,30 +39,8 @@ function HomescreenCard(props) {
 	} = props.item;
 
 	useEffect(() => {
-		if (favIds) {
-			favIds.forEach(itemID => {
-				if (itemID === id) {
-					setFav(true);
-				} else {
-					setFav(false);
-				}
-			});
-		} else {
-			setFav(false);
-		}
-	}, [favIds]);
-
-	useEffect(() => {
-		setFavIds(props.agentsFaveIds);
-		if (props.agentsFaveIds) {
-		}
-	}, [props.agentsFaveIds]);
-
-	// useEffect(() => {
-	// 	console.log('useEffect fav agents');
-	// 	setFavIds(props.favAgents);
-	// 	console.log(props.favAgents);
-	// }, [props.favAgents]);
+		props.fetchFavAgents();
+	}, []);
 
 	useEffect(() => {
 		if (props.agentProperty) {
@@ -71,17 +53,71 @@ function HomescreenCard(props) {
 	}, [props.agentProperty]);
 
 	useEffect(() => {
-		if (fav) {
-			props.saveFavAgent(id);
+		if (fav && !saved) {
+			(async () => {
+				try {
+					await favouritesRef
+						.child('agents')
+						.child(firebase.auth().currentUser.uid)
+						.push({
+							agentID: id,
+						});
+					setFavKey(null);
+					setSaved(true);
+				} catch (err) {
+					console.log(err);
+				}
+			})();
 		}
-
-		if (fav === false) {
-			// delete from the array
-			props.removeSaveAgent(id);
-			props.fetchFaveAgents();
-			setFav(false);
+		if (fav === false && saved) {
+			(async () => {
+				try {
+					console.log('removing');
+					favouritesRef
+						.child('agents')
+						.child(firebase.auth().currentUser.uid)
+						.on('child_added', snapshot => {
+							console.log(snapshot.val().agentID === id);
+							if (snapshot.val().agentID === id) {
+								setFavKey(snapshot.key);
+							}
+						});
+				} catch (err) {
+					console.log(err);
+				}
+			})();
 		}
 	}, [fav]);
+
+	useEffect(() => {
+		if (favKey && saved) {
+			(async () => {
+				try {
+					await favouritesRef
+						.child('agents')
+						.child(firebase.auth().currentUser.uid)
+						.child(favKey)
+						.remove();
+
+					props.fetchFavAgents();
+				} catch (err) {
+					console.log(err);
+				}
+			})();
+		}
+	}, [favKey]);
+
+	useEffect(() => {
+		if (props.favAgentsIDS.length > 0) {
+			const isFav = props.favAgentsIDS.includes(id);
+
+			setSaved(isFav);
+			setFav(isFav);
+		} else {
+			setSaved(false);
+			setFav(false);
+		}
+	}, [props.favAgentsIDS]);
 
 	const hanldeAgentDetailsNavigation = () =>
 		props.navigation.navigate('AgentDetails', {
@@ -272,13 +308,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-	favAgents: state.agentState.agentsFave,
+	// favAgents: state.agentState.agentsFave,
+	favAgentsIDS: state.agentState.favAgentsIDS,
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators(
-		{ saveFavAgent, removeSaveAgent, fetchFaveAgents },
-		dispatch
-	);
+	bindActionCreators({ fetchFavAgents }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomescreenCard);

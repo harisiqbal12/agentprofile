@@ -14,6 +14,7 @@ const INITIAL_STATE = {
 	agentByID: null,
 	agentsFave: [],
 	favAgents: [],
+	favAgentsIDS: [],
 };
 
 const agentReducer = (state = INITIAL_STATE, action) => {
@@ -42,7 +43,7 @@ const agentReducer = (state = INITIAL_STATE, action) => {
 		case AGENT_FAV_FETCH:
 			return {
 				...state,
-				agentsFave: action.data,
+				favAgentsIDS: action.data,
 			};
 
 		case AGENT_FAV_REMOVE:

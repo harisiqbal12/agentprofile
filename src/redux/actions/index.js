@@ -133,56 +133,6 @@ export function fetchAgentProperites(agentId) {
 }
 let saveAgentsArray = [];
 
-export function fetchFaveAgents() {
-	return async dispatch => {
-		try {
-			const values = await AsyncStorage.getItem('@favouritesAgentId');
-			saveAgentsArray = JSON.parse(values);
-
-			if (values !== null) {
-				dispatch({ type: AGENT_FAV_FETCH, data: saveAgentsArray });
-				return;
-			}
-			dispatch({ type: AGENT_FAV_FETCH, data: [] });
-		} catch (err) {
-			console.log(err);
-		}
-	};
-}
-
-export function saveFavAgent(id) {
-	return async dispatch => {
-		try {
-			const check = saveAgentsArray.find(itemId => itemId === id);
-			if (!check) {
-				saveAgentsArray.push(id);
-			}
-
-			const jsonVlalue = JSON.stringify(saveAgentsArray);
-			await AsyncStorage.setItem('@favouritesAgentId', jsonVlalue);
-			dispatch({ type: AGENT_FAV_SAVE });
-		} catch (err) {
-			console.log(err);
-		}
-	};
-}
-
-export function removeSaveAgent(id) {
-	return async dispatch => {
-		try {
-			const updatedArray = saveAgentsArray.filter(itemId => itemId !== id);
-			saveAgentsArray = updatedArray;
-
-			const jsonVlalue = JSON.stringify(saveAgentsArray);
-			await AsyncStorage.setItem('@favouritesAgentId', jsonVlalue);
-
-			dispatch({ type: AGENT_FAV_REMOVE });
-		} catch (err) {
-			console.log(err);
-		}
-	};
-}
-
 export function fetchFavAgentFromDatabase(id) {
 	let favAgentsFromDatabase = [];
 
@@ -210,28 +160,27 @@ export function fetchFavAgentFromDatabase(id) {
 
 let propertyFavArray = [];
 
-export function fetchFavProperty() {
-	return async dispatch => {
-		try {
-			const values = await AsyncStorage.getItem('@propertyFavArray');
-			propertyFavArray = JSON.parse(values);
-			if (propertyFavArray != null) {
-				dispatch({ type: PROPERTY_FAV_FETCH, data: propertyFavArray });
-				return;
-			}
+// export function fetchFavProperty() {
+// 	return async dispatch => {
+// 		try {
+// 			const values = await AsyncStorage.getItem('@propertyFavArray');
+// 			propertyFavArray = JSON.parse(values);
+// 			if (propertyFavArray != null) {
+// 				dispatch({ type: PROPERTY_FAV_FETCH, data: propertyFavArray });
+// 				return;
+// 			}
 
-			dispatch({ type: PROPERTY_FAV_FETCH, data: [] });
-		} catch (err) {
-			console.log(err);
-		}
-	};
-}
+// 			dispatch({ type: PROPERTY_FAV_FETCH, data: [] });
+// 		} catch (err) {
+// 			console.log(err);
+// 		}
+// 	};
+// }
 
 export function faveSaveProperty(id) {
 	return async dispatch => {
 		try {
 			let isExist = false;
-
 
 			if (propertyFavArray.length > 0) {
 				isExist = propertyFavArray.find(
@@ -239,11 +188,9 @@ export function faveSaveProperty(id) {
 				);
 			}
 
-
 			if (!isExist) {
 				propertyFavArray.push(id);
 			}
-
 
 			const values = JSON.stringify(propertyFavArray);
 
@@ -256,38 +203,23 @@ export function faveSaveProperty(id) {
 	};
 }
 
-export function faveRemoveProperty(id) {
-	return async dispatch => {
-		try {
-			const updatedArray = propertyFavArray.filter(
-				itemId => itemId.propertyID !== id.propertyID
-			);
-
-			propertyFavArray = updatedArray;
-
-			const values = JSON.stringify(propertyFavArray);
-			await AsyncStorage.setItem('@propertyFavArray', values);
-
-			dispatch({ type: PROPERTY_FAV_REMOVE });
-		} catch (err) {}
-	};
-}
-
 export function fetchFavPropertiesFromDatabase(data) {
 	let favPropertiesFromDatabase = [];
 	return async dispatch => {
 		try {
 			const properitesRef = firebase.database().ref('properties');
+			console.log('action');
 			// console.log('fetch properties from database')
 			data.forEach(item => {
 				properitesRef
 					.child(item.authorID)
-					.child(item.propertyID)
+					.child(item.id)
 					.on('value', snapshot => {
 						// console.log(snapshot.val());
 						const values = snapshot.val();
 						values['id'] = snapshot.key;
 						favPropertiesFromDatabase.push(values);
+						console.log(values);
 
 						dispatch({
 							type: PROPERTY_FAV_FROM_DATABASE,
@@ -295,6 +227,51 @@ export function fetchFavPropertiesFromDatabase(data) {
 						});
 					});
 			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchFavAgents() {
+	return async dispatch => {
+		try {
+			let data = [];
+			const favouritesRef = firebase.database().ref('favourites/agents');
+			const currentUser = firebase.auth().currentUser;
+			favouritesRef.child(currentUser.uid).on('child_added', snapshot => {
+				const values = snapshot.val();
+				// values['key'] = snapshot.key
+				data.push(values.agentID);
+				dispatch({ type: AGENT_FAV_FETCH, data });
+				return;
+			});
+
+			dispatch({ type: AGENT_FAV_FETCH, data });
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchFavProperties() {
+	return async dispatch => {
+		console.log('fetching properties');
+		let data = [];
+		try {
+			const favouritesRef = firebase.database().ref('favourites/properties');
+			const currentUSer = firebase.auth().currentUser;
+
+			favouritesRef.child(currentUSer.uid).on('child_added', snapshot => {
+				const values = snapshot.val();
+				values['snapID'] = snapshot.key;
+				data.push(values);
+
+				dispatch({ type: PROPERTY_FAV_FETCH, data: data });
+				return;
+			});
+
+			dispatch({ type: PROPERTY_FAV_FETCH, data: [] });
 		} catch (err) {
 			console.log(err);
 		}

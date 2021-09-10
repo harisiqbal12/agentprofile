@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 
 import { default as theme } from '../theme/custom-theme.json';
 
-import { fetchAgentProperites, fetchFavProperty } from '../redux/actions/index';
+import { fetchAgentProperites } from '../redux/actions/index';
 
 function PropertyCard(props) {
 	const [visible, setVisible] = React.useState(false);
@@ -22,9 +22,9 @@ function PropertyCard(props) {
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
 
-	useEffect(() => {
-		props.fetchFavProperty();
-	}, []);
+	// useEffect(() => {
+	// 	props.fetchFavProperty();
+	// }, []);
 
 	const { data } = props;
 	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
@@ -236,6 +236,6 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators({ fetchAgentProperites, fetchFavProperty }, dispatch);
+	bindActionCreators({ fetchAgentProperites }, dispatch);
 
 export default connect(null, mapDispatchToProps)(PropertyCard);

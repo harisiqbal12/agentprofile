@@ -7,7 +7,8 @@ import { bindActionCreators } from 'redux';
 import {
 	fetchAgentProperty,
 	fetchAgents,
-	fetchFaveAgents,
+	fetchFavAgents,
+	// fetchFaveAgents,
 } from '../redux/actions';
 import HomescreenCard from './HomescreenCard';
 import Loader from './Loader';
@@ -16,11 +17,6 @@ function Homescreen(props) {
 	const [loading, setLoading] = useState(true);
 	const { currentAgent } = props;
 	const [isRefreshing, setIsRefreshing] = useState(false);
-	const [fetchFaveAgents, setFetchFaveAgents] = useState([]);
-
-	useEffect(() => {
-		setFetchFaveAgents(props.favAgents);
-	}, [props.favAgents]);
 
 	useEffect(() => {
 		let cancel = false;
@@ -42,6 +38,7 @@ function Homescreen(props) {
 	const handleRefresh = () => {
 		setIsRefreshing(true);
 		props.fetchAgents();
+		props.fetchFavAgents();
 		setTimeout(() => {
 			setIsRefreshing(false);
 			currentAgent.forEach((agent, index) => {
@@ -71,7 +68,7 @@ function Homescreen(props) {
 							navigation={props.navigation}
 							agentProperty={props.agentProperty}
 							item={item}
-							agentsFaveIds={fetchFaveAgents}
+							// agentsFaveIds={fetchFaveAgents}
 						/>
 						// </TouchableOpacity>
 					);
@@ -109,12 +106,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
 	currentAgent: state.agentState.agents,
 	agentProperty: state.propertyState.agentProperty,
-	favAgents: state.agentState.agentsFave,
+	// favAgents: state.agentState.agentsFave,
 });
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
-		{ fetchAgentProperty, fetchAgents, fetchFaveAgents },
+		{ fetchAgentProperty, fetchAgents, fetchFavAgents },
 		dispatch
 	);
 

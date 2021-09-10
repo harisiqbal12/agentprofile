@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
 mapStateToProps = store => ({
 	currentUser: store.userState.currentUser,
 	currentAgent: store.agentState.currentAgent,
-	favAgents: store.agentState.agentsFave,
+	// favAgents: store.agentState.agentsFave,
 	agentProperty: store.propertyState.agentProperty,
 });
 

@@ -16,27 +16,29 @@ import { bindActionCreators } from 'redux';
 import {
 	fetchAgentById,
 	faveSaveProperty,
-	faveRemoveProperty,
-	fetchFavProperty,
+	fetchFavProperties,
 } from '../redux/actions';
 import Loader from './Loader';
 import AgentCard from './AgentCard';
+import firebase from 'firebase';
 
 import { default as theme } from '../theme/custom-theme.json';
 
 function Property(props) {
-	const [fav, setFav] = useState(null);
+	const [fav, setFav] = useState(false);
+	const [saved, setSaved] = useState(false);
+	const [favKey, setFavKey] = useState(null);
 	const [loading, setLoading] = useState(false);
-
+	const favourites = firebase.database().ref('favourites');
 	const { data } = props.route.params;
 	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
-
 
 	useEffect(() => {
 		setLoading(true);
 		(async () => {
 			try {
 				await props.fetchAgentById(data.authorID);
+				await props.fetchFavProperties();
 				setLoading(false);
 			} catch (err) {
 				console.log(err);
@@ -45,30 +47,60 @@ function Property(props) {
 	}, []);
 
 	useEffect(() => {
-		let favPropertyData = {};
-		const { authorID, id } = data;
-		favPropertyData['authorID'] = authorID;
-		favPropertyData['propertyID'] = id;
-		if (fav) {
-			props.faveSaveProperty(favPropertyData);
+		if (fav && !saved) {
+			(async () => {
+				console.log('saving');
+				try {
+					await favourites
+						.child('properties')
+						.child(firebase.auth().currentUser.uid)
+						.push({
+							id: data.id,
+							authorID: data.authorID,
+						});
+
+					console.log('saved');
+					setSaved(true);
+				} catch (err) {
+					console.log(err);
+				}
+			})();
 		}
-		if (fav === false) {
-			props.faveRemoveProperty(favPropertyData);
-			props.fetchFavProperty();
-			setFav(false);
+		if (!fav && saved) {
+			(async () => {
+				console.log('removing');
+				try {
+					await favourites
+						.child('properties')
+						.child(firebase.auth().currentUser.uid)
+						.child(favKey)
+						.remove();
+
+					setSaved(false);
+					console.log('removed');
+					props.fetchFavProperties();
+				} catch (err) {
+					console.log(err);
+				}
+			})();
 		}
 	}, [fav]);
 
 	useEffect(() => {
-		const { favProperties } = props.route.params;
-		if (favProperties) {
-			favProperties.forEach(item => {
-				if (item.propertyID === data.id) {
+		console.log('useffeect');
+		console.log(props.route.params.data.id);
+		console.log(props.favProperties);
+		if (props.favProperties.length > 0) {
+			props.favProperties.forEach(itemId => {
+				if (data.id === itemId.id) {
+					console.log('setting state');
 					setFav(true);
+					setSaved(true);
+					setFavKey(itemId.snapID);
 				}
 			});
 		}
-	}, [props.route.params.favProperties]);
+	}, [props.favProperties]);
 
 	const handleAgentProfileNavigation = () => {
 		let agent = props.agentByID;
@@ -89,6 +121,8 @@ function Property(props) {
 		props.navigation.navigate('Contact', {
 			agentEmail: props.agentByID.email,
 		});
+
+	console.log('fav: ' + fav);
 
 	if (loading) {
 		return <Loader />;
@@ -531,12 +565,13 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
-		{ fetchAgentById, faveSaveProperty, faveRemoveProperty, fetchFavProperty },
+		{ fetchAgentById, faveSaveProperty, fetchFavProperties },
 		dispatch
 	);
 
 const mapStateToProps = state => ({
 	agentByID: state.agentState.agentByID,
+	favProperties: state.propertyState.favProperty,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Property);

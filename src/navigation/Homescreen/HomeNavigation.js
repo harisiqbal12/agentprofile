@@ -9,8 +9,9 @@ import {
 	fetchAgents,
 	fetchCurrentAgent,
 	fetchAllProperties,
-	fetchFaveAgents,
-	fetchFavProperty
+	// fetchFaveAgents,
+	fetchFavAgents,
+	fetchFavProperties
 } from '../../redux/actions/index';
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
@@ -26,8 +27,9 @@ function HomeNavigation({
 	fetchAgents,
 	fetchCurrentAgent,
 	fetchAllProperties,
-	fetchFaveAgents,
-	fetchFavProperty,
+	// fetchFaveAgents,
+	fetchFavAgents,
+	fetchFavProperties,
 }) {
 	useEffect(() => {
 		let cancel = false;
@@ -37,8 +39,9 @@ function HomeNavigation({
 		fetchAgents();
 		fetchCurrentAgent();
 		fetchAllProperties();
-		fetchFaveAgents();
-		fetchFavProperty();
+		// fetchFaveAgents();
+		fetchFavAgents();
+		fetchFavProperties();
 
 		return () => {
 			cancel = true;
@@ -110,8 +113,9 @@ const mapDispatchtoProps = dispatch =>
 			fetchAgents,
 			fetchCurrentAgent,
 			fetchAllProperties,
-			fetchFaveAgents,
-			fetchFavProperty
+			// fetchFaveAgents,
+			fetchFavAgents,
+			fetchFavProperties,
 		},
 		dispatch
 	);

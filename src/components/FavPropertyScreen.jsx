@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import {
 	fetchFavPropertiesFromDatabase,
-	fetchFavProperty,
+	fetchFavProperties,
 } from '../redux/actions/index';
 
 import Loader from './Loader';
@@ -14,15 +14,18 @@ import PropertyCard from './PropertyCard';
 import NotFound from './Notfound';
 
 function FavPropertyScreen(props) {
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [properties, setProperties] = useState([]);
 
-	useEffect(() => {
-		props.fetchFavProperty();
-	}, []);
+	// useEffect(() => {
+	// 	props.fetchFavProperties();
+	// }, []);
 
 	useEffect(() => {
+		console.log('fav property screen');
+		// console.log(props.favProperties);
 		if (props.favProperties.length > 0) {
+			console.log('fetching')
 			props.fetchFavPropertiesFromDatabase(props.favProperties);
 		} else {
 			setProperties([]);
@@ -88,7 +91,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchtoProps = dispatch =>
 	bindActionCreators(
-		{ fetchFavPropertiesFromDatabase, fetchFavProperty },
+		{ fetchFavPropertiesFromDatabase, fetchFavProperties },
 		dispatch
 	);
 

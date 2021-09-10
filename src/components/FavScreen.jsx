@@ -11,36 +11,28 @@ import Loader from './Loader';
 import NotFound from './Notfound';
 
 function FavScreen(props) {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [currentAgent, setCurrentAgent] = useState([]);
 	const [isRefresh, setIsRefres] = useState(false);
 	const [favAgents, setFavAgents] = useState([]);
 
 	useEffect(() => {
-		setLoading(true);
-		if (props.route.params.data) {
-			const { data } = props.route.params;
-			props.fetchFavAgentFromDatabase(data);
-
-			setLoading(false);
-		}
-	}, []);
-
-	useEffect(() => {
 		if (props.favAgents) {
 			setCurrentAgent(props.favAgents);
+			setLoading(false);
 		}
 	}, [props.favAgents]);
 
 	useEffect(() => {
-		setFavAgents(props.favAgentsArray);
+		if (props.favAgentsArray.length > 0) {
+			props.fetchFavAgentFromDatabase(props.favAgentsArray);
+		}
 	}, [props.favAgentsArray]);
 
 	const handleRefresh = () => {
 		setIsRefres(true);
-		const { data } = props.route.params;
 
-		props.fetchFavAgentFromDatabase(data);
+		props.fetchFavAgentFromDatabase(props.favAgentsArray);
 
 		setTimeout(() => {
 			setIsRefres(false);
@@ -54,6 +46,8 @@ function FavScreen(props) {
 	if (!currentAgent.length > 0) {
 		return <NotFound title='No Favourite Agent Found' />;
 	}
+
+	console.log(currentAgent);
 
 	return (
 		<SafeAreaView style={styles.SafeAreaView}>
@@ -72,7 +66,7 @@ function FavScreen(props) {
 							item={item}
 							// favAgents={props.route.params.data}
 							agentProperty={props.route.params.agentProperty}
-							agentsFaveIds={favAgents}
+							// agentsFaveIds={favAgents}
 						/>
 					);
 				}}
@@ -101,7 +95,7 @@ const styles = StyleSheet.create({
 
 const mapStateTorProps = state => ({
 	favAgents: state.agentState.favAgents,
-	favAgentsArray: state.agentState.agentsFave,
+	favAgentsArray: state.agentState.favAgentsIDS,
 });
 
 const mapDispatchToProps = dispatch =>
