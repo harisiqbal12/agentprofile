@@ -15,10 +15,17 @@ function Settings(props) {
 	const [isExpandedAccountSettings, setIsExpandedAccountSettings] =
 		useState(true);
 
+	const [isExpandedAdminSettings, setIsExpandedAdminSettings] = useState(true);
+
+	const [isAdmin, setIsAdmin] = useState(false);
+
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		if (currentUser) {
+			if (currentUser.admin) {
+				setIsAdmin(true);
+			}
 			setLoading(false);
 		}
 	}, [currentUser]);
@@ -60,6 +67,10 @@ function Settings(props) {
 
 	const handleFavPropertyNavigation = () => {
 		props.navigation.navigate('FavPropertyScreen');
+	};
+
+	const handleFeatureListAdminNavigation = () => {
+		props.navigation.navigate('FeatureListAdmin');
 	};
 
 	if (loading) {
@@ -231,6 +242,33 @@ function Settings(props) {
 								)}
 							/>
 						</List.Accordion>
+						{isAdmin ? (
+							<List.Accordion
+								onPress={() =>
+									setIsExpandedAdminSettings(!isExpandedAdminSettings)
+								}
+								expanded={isExpandedAdminSettings}
+								titleStyle={styles.basicFontStylePrimary}
+								style={styles.userProfileList}
+								title='Admin Settings'
+								left={props => (
+									<List.Icon {...props} icon='account-cog' color='#fff' />
+								)}>
+								<List.Item
+									title='Manage Users'
+									titleStyle={styles.basicFontStyleSecondary}
+									onPress={handleFeatureListAdminNavigation}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='account-group'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+							</List.Accordion>
+						) : null}
 					</List.Section>
 				</Layout>
 			</ScrollView>

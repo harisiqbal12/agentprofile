@@ -6,6 +6,7 @@ import {
 	AGENT_FAV_FETCH,
 	AGENT_FAV_REMOVE,
 	AGENT_FAV_FROM_DATABASE,
+	FETCH_FEATURE_LIST,
 } from '../constants';
 
 const INITIAL_STATE = {
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
 	agentsFave: [],
 	favAgents: [],
 	favAgentsIDS: [],
+	featuredList: [],
 };
 
 const agentReducer = (state = INITIAL_STATE, action) => {
@@ -54,6 +56,12 @@ const agentReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				favAgents: action.data,
+			};
+
+		case FETCH_FEATURE_LIST:
+			return {
+				...state,
+				featuredList: action.data,
 			};
 
 		default:

@@ -11,12 +11,14 @@ import {
 	fetchAllProperties,
 	// fetchFaveAgents,
 	fetchFavAgents,
-	fetchFavProperties
+	fetchFavProperties,
+	fetchFeaturedAgents,
 } from '../../redux/actions/index';
 import Homescreen from '../../components/Homescreen';
 import Agents from '../../components/Agents';
 import Settings from '../../components/Settings';
 import Properties from '../../components/Properties';
+import FeatureScreen from '../../components/FeatureScreen';
 
 import { default as theme } from '../../theme/custom-theme.json';
 
@@ -30,6 +32,7 @@ function HomeNavigation({
 	// fetchFaveAgents,
 	fetchFavAgents,
 	fetchFavProperties,
+	fetchFeaturedAgents,
 }) {
 	useEffect(() => {
 		let cancel = false;
@@ -42,6 +45,7 @@ function HomeNavigation({
 		// fetchFaveAgents();
 		fetchFavAgents();
 		fetchFavProperties();
+		fetchFeaturedAgents();
 
 		return () => {
 			cancel = true;
@@ -71,6 +75,16 @@ function HomeNavigation({
 					tabBarLabel: 'Agents',
 					tabBarIcon: ({ color }) => (
 						<Icon style={{ height: 26, width: 26 }} fill={color} name='people' />
+					),
+				}}
+			/>
+			<Tab.Screen
+				component={FeatureScreen}
+				name='Featured'
+				options={{
+					tabBarLabel: 'Featured',
+					tabBarIcon: ({ color }) => (
+						<Icon style={{ height: 26, width: 26 }} fill={color} name='star' />
 					),
 				}}
 			/>
@@ -116,6 +130,7 @@ const mapDispatchtoProps = dispatch =>
 			// fetchFaveAgents,
 			fetchFavAgents,
 			fetchFavProperties,
+			fetchFeaturedAgents,
 		},
 		dispatch
 	);

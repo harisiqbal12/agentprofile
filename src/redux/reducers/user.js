@@ -1,7 +1,11 @@
-import { USER_STATE_CHANGED } from '../constants';
+import { USER_STATE_CHANGED, SHOW_MODAL, HIDE_MODAL } from '../constants';
 
 const initialState = {
 	currentUser: null,
+	modal: {
+		showModal: false,
+		message: null,
+	},
 };
 
 const userReduer = (state = initialState, action) => {
@@ -10,6 +14,23 @@ const userReduer = (state = initialState, action) => {
 			return {
 				...state,
 				currentUser: action.currentUser,
+			};
+
+		case SHOW_MODAL:
+			return {
+				...state,
+				modal: {
+					showModal: true,
+					message: action.message,
+				},
+			};
+		case HIDE_MODAL:
+			return {
+				...state,
+				modal: {
+					showModal: false,
+					message: null,
+				},
 			};
 
 		default:

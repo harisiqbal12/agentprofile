@@ -9,6 +9,8 @@ import { bindActionCreators } from 'redux';
 import PropertyCard from './PropertyCard';
 import { fetchAllProperties } from '../redux/actions/index';
 
+import { default as theme } from '../theme/custom-theme.json';
+
 function Properties(props) {
 	const [searchCompleted, setSearchCompleted] = useState(false);
 	const [searchResult, setSearchResult] = useState([]);
@@ -59,10 +61,13 @@ function Properties(props) {
 	return (
 		<SafeAreaView style={styles.safeAreaView}>
 			<Searchbar
-				theme={{ colors: { primary: '#EA723D' } }}
+				theme={{ colors: { primary: '#fff' } }}
 				style={styles.searchBar}
 				placeholder='search properties'
 				onChangeText={handleSearch}
+				inputStyle={{ color: '#fff' }}
+				placeholderTextColor='#fff'
+				iconColor='#fff'
 			/>
 			<FlatList
 				refreshing={isRefreshing}
@@ -91,6 +96,8 @@ const styles = StyleSheet.create({
 	},
 	searchBar: {
 		margin: 16,
+		backgroundColor: theme['color-primary-400'],
+		color: '#fff',
 	},
 });
 

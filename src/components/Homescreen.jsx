@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+
 import {
 	fetchAgentProperty,
 	fetchAgents,

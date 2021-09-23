@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "agentprofile",
-    "slug": "agentprofile",
-    "version": "1.0.0",
+    "name": "Agentprofile",
+    "slug": "Agentprofile",
+    "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/appleicon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,17 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.devharis.agentprofile"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/appleicon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.devharis.agentprofile"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/appleicon.png"
     }
   }
 }

@@ -10,14 +10,16 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import find from 'array-find';
+import { Layout, Text } from '@ui-kitten/components';
 
-import { fetchAgents } from '../redux/actions';
+import { fetchFeaturedAgents } from '../redux/actions';
 import AgentCard from './AgentCard';
 import Loader from './Loader';
 
+
 import { default as theme } from '../theme/custom-theme.json';
 
-function Agents(props) {
+function FeatureScreen(props) {
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [searchData, setSearchData] = useState(null);
 	const [searchCompleted, setSearchCompleted] = useState(false);
@@ -39,7 +41,7 @@ function Agents(props) {
 	const handelRefresh = async () => {
 		setIsRefreshing(true);
 
-		await props.fetchAgents();
+		await props.fetchFeaturedAgents();
 
 		setTimeout(() => {
 			setIsRefreshing(false);
@@ -74,12 +76,15 @@ function Agents(props) {
 			<Searchbar
 				theme={{ colors: { primary: '#fff' } }}
 				style={styles.searchBar}
-				placeholder='search agent'
+				placeholder='Search featured agents'
 				onChangeText={search}
 				inputStyle={{ color: '#fff' }}
 				placeholderTextColor='#fff'
 				iconColor='#fff'
 			/>
+			<Layout style={styles.titleContainer}>
+				<Text style={styles.headerTitle}>Featured Agents</Text>
+			</Layout>
 			<FlatList
 				refreshing={isRefreshing}
 				onRefresh={handelRefresh}
@@ -115,13 +120,25 @@ const styles = StyleSheet.create({
 		backgroundColor: theme['color-primary-400'],
 		color: '#fff',
 	},
+	titleContainer: {
+		backgroundColor: 'transparent',
+		flex: 0.1,
+		justifyContent: 'center',
+		marginLeft: '5%',
+	},
+	headerTitle: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		color: theme['color-primary-300'],
+		fontFamily: 'Roboto_400Regular',
+	},
 });
 
 const mapStateToProps = store => ({
-	currentAgent: store.agentState.agents,
+	currentAgent: store.agentState.featuredList,
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators({ fetchAgents }, dispatch);
+	bindActionCreators({ fetchFeaturedAgents }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Agents);
+export default connect(mapStateToProps, mapDispatchToProps)(FeatureScreen);

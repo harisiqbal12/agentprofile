@@ -14,6 +14,7 @@ import Contact from '../../components/Contact';
 import About from '../../components/About';
 import FavScreen from '../../components/FavScreen';
 import FavPropertyScreen from '../../components/FavPropertyScreen';
+import FeatureListAdmin from '../../components/FeatureListAdmin';
 
 const App = createStackNavigator();
 
@@ -36,6 +37,7 @@ function AppNavigation() {
 			<App.Screen name='Contact' component={Contact} />
 			<App.Screen name='FavScreen' component={FavScreen} />
 			<App.Screen name='FavPropertyScreen' component={FavPropertyScreen} />
+			<App.Screen name='FeatureListAdmin' component={FeatureListAdmin} />
 		</App.Navigator>
 	);
 }

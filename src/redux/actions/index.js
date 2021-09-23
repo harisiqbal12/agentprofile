@@ -17,6 +17,9 @@ import {
 	PROPERTY_FAV_SAVE,
 	PROPERTY_FAV_REMOVE,
 	PROPERTY_FAV_FROM_DATABASE,
+	SHOW_MODAL,
+	FETCH_FEATURE_LIST,
+	HIDE_MODAL,
 } from '../constants/index';
 
 export function fetchUser() {
@@ -275,6 +278,35 @@ export function fetchFavProperties() {
 		} catch (err) {
 			console.log(err);
 		}
+	};
+}
+
+export function showModal(message) {
+	return dispatch => {
+		dispatch({ type: SHOW_MODAL, message });
+	};
+}
+
+export function fetchFeaturedAgents() {
+	return async dispatch => {
+		try {
+			const data = [];
+			const featureRef = firebase.database().ref('featureList');
+			featureRef.on('child_added', snapshot => {
+				data.push(snapshot.val());
+				console.log(data);
+
+				dispatch({ type: FETCH_FEATURE_LIST, data });
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function hideModal() {
+	return dispatch => {
+		dispatch({ type: HIDE_MODAL });
 	};
 }
 
