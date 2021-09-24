@@ -379,6 +379,43 @@ function CreateProperties(props) {
 			const agentRef = firebase.database().ref('agents');
 
 			if (props.data) {
+				if (props.adminPrevelage) {
+					await propertyRef
+						.child(props.data.authorID)
+						.child(props.data.id)
+						.update({
+							propertyName,
+							propertyAddress,
+							propertyArea,
+							propertyPrice,
+							propertyDescript,
+							images: urls,
+							bedrooms: selectBedrooms,
+							bathrooms: selectBathrooms,
+							garage: selectGarage,
+							authorID: currentUser.uid,
+							features: {
+								airCondition,
+								builtInRobes,
+								deck,
+								dishWasher,
+								garden,
+								fullyFenced,
+								outdoorEntertainingArea,
+								floorboards,
+								balcony,
+								builtInWardrobes,
+								courtyard,
+							},
+						});
+
+					await props.fetchAgentProperites(currentUser.uid);
+
+					setLoading(false);
+
+					return;
+				}
+
 				await propertyRef.child(currentUser.uid).child(props.data.id).update({
 					propertyName,
 					propertyAddress,

@@ -35,9 +35,7 @@ function Agents(props) {
 	}, [currentAgent]);
 
 	useEffect(() => {
-		console.log(props.modal);
 		if (props.modal.showModal) {
-			console.log(props.modal);
 			setShowModal(props.modal.showModal);
 			setModalMessage(props.modal.message);
 		} else {
@@ -92,24 +90,28 @@ function Agents(props) {
 		<SafeAreaView style={styles.agentContainer}>
 			<Provider>
 				<Searchbar
-					theme={{ colors: { primary: '#EA723D' } }}
+					theme={{ colors: { primary: '#fff' } }}
 					style={styles.searchBar}
 					placeholder='search agent'
 					onChangeText={search}
+					inputStyle={{ color: '#fff' }}
+					placeholderTextColor='#fff'
+					iconColor='#fff'
 				/>
 				<FlatList
 					refreshing={isRefreshing}
 					onRefresh={handelRefresh}
-					contentContainerStyle={{
-						padding: 16,
-					}}
 					style={styles.flatList}
 					data={searchCompleted ? searchData : currentAgent}
 					renderItem={({ item }) => {
 						return (
 							<TouchableOpacity
 								onPress={() => handleListingPropertiessNavigaiton(item)}>
-								<AgentCard adminPrevelage={true} item={item} />
+								<AgentCard
+									navigation={props.navigation}
+									adminPrevelage={true}
+									item={item}
+								/>
 							</TouchableOpacity>
 						);
 					}}
@@ -123,8 +125,8 @@ function Agents(props) {
 						<Layout style={styles.modalContainer}>
 							<Icon
 								style={styles.icon}
-								name='email-outline'
-								fill={theme['color-primary-500']}
+								name='checkmark-circle-2-outline'
+								fill={theme['color-success-200']}
 							/>
 
 							<Text style={styles.textModal}>{modalMessage}</Text>
@@ -156,6 +158,8 @@ const styles = StyleSheet.create({
 	},
 	searchBar: {
 		margin: 16,
+		backgroundColor: theme['color-primary-400'],
+		color: '#fff',
 	},
 	modal: {
 		width: 250,

@@ -11,7 +11,7 @@ import { fetchAllProperties } from '../redux/actions/index';
 
 import { default as theme } from '../theme/custom-theme.json';
 
-function Properties(props) {
+function ManageProperties(props) {
 	const [searchCompleted, setSearchCompleted] = useState(false);
 	const [searchResult, setSearchResult] = useState([]);
 	const { currentProperties } = props;
@@ -77,6 +77,7 @@ function Properties(props) {
 				renderItem={({ item }) => {
 					return (
 						<PropertyCard
+							adminPrevelage={true}
 							favProperties={favProperties}
 							navigation={props.navigation}
 							data={item}
@@ -109,4 +110,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
 	bindActionCreators({ fetchAllProperties }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Properties);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageProperties);

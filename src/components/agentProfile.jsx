@@ -19,6 +19,9 @@ import SpinnerSmall from './spinnerSmall';
 
 function AgentProfile(props) {
 	const { currentAgent } = props.route.params;
+	console.log('\n\n\n');
+	console.log(currentAgent);
+	console.log(currentAgent.uid);
 
 	const [isLoading, setLoading] = useState(false);
 	const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
@@ -81,6 +84,26 @@ function AgentProfile(props) {
 				});
 				setLoading(false);
 
+				await props.fetchAgents();
+				await props.fetchCurrentAgent();
+
+				return;
+			}
+
+			if (currentAgent.id) {
+				await agentsRef.child(currentAgent.id).update({
+					displayName,
+					email,
+					mobile,
+					office,
+					whatsApp,
+					about,
+					profileURL: profiileImageURL ? profiileImageURL : profileURL,
+				});
+
+				await props.fetchAgents();
+				setLoading(false);
+				await props.fetchCurrentAgent();
 				return;
 			}
 

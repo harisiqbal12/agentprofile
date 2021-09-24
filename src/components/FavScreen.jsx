@@ -47,7 +47,6 @@ function FavScreen(props) {
 		return <NotFound title='No Favourite Agent Found' />;
 	}
 
-	console.log(currentAgent);
 
 	return (
 		<SafeAreaView style={styles.SafeAreaView}>

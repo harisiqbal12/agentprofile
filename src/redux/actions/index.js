@@ -259,7 +259,7 @@ export function fetchFavAgents() {
 
 export function fetchFavProperties() {
 	return async dispatch => {
-		console.log('fetching properties');
+		// console.log('fetching properties');
 		let data = [];
 		try {
 			const favouritesRef = firebase.database().ref('favourites/properties');
@@ -294,7 +294,7 @@ export function fetchFeaturedAgents() {
 			const featureRef = firebase.database().ref('featureList');
 			featureRef.on('child_added', snapshot => {
 				data.push(snapshot.val());
-				console.log(data);
+				// console.log(data);
 
 				dispatch({ type: FETCH_FEATURE_LIST, data });
 			});

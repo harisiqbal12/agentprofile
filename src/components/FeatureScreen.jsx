@@ -83,13 +83,12 @@ function FeatureScreen(props) {
 				iconColor='#fff'
 			/>
 			<Layout style={styles.titleContainer}>
-				<Text style={styles.headerTitle}>Featured Agents</Text>
+				<Text style={styles.headerTitle}>Weekly Featured Agents</Text>
 			</Layout>
 			<FlatList
 				refreshing={isRefreshing}
 				onRefresh={handelRefresh}
 				contentContainerStyle={{
-					padding: 16,
 				}}
 				style={styles.flatList}
 				data={searchCompleted ? searchData : currentAgent}

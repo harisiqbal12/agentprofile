@@ -7,7 +7,15 @@ import {
 } from '@ui-kitten/components';
 import { StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import formate from 'format-number';
-import { Modal, Portal, Text, Button, Provider, Card } from 'react-native-paper';
+import {
+	Modal,
+	Portal,
+	Text,
+	Button,
+	Provider,
+	Card,
+	List,
+} from 'react-native-paper';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,7 +25,8 @@ import { default as theme } from '../theme/custom-theme.json';
 import { fetchAgentProperites } from '../redux/actions/index';
 
 function PropertyCard(props) {
-	const [visible, setVisible] = React.useState(false);
+	const [visible, setVisible] = useState(false);
+	const [isExpandedUserSettings, setIsExpandedUserSettings] = useState(true);
 
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
@@ -42,6 +51,30 @@ function PropertyCard(props) {
 
 	const handleDelete = async () => {
 		try {
+			if (props.adminPrevelage) {
+				// console.log('admin prevelega');
+				// console.log(data);
+				await firebase
+					.database()
+					.ref('properties')
+					.child(data.authorID)
+					.child(data.id)
+					.remove();
+
+				await firebase
+					.database()
+					.ref('agents')
+					.child(data.authorID)
+					.update({
+						listingProperties: firebase.database.ServerValue.increment(-1),
+					});
+
+				hideModal();
+				return;
+			}
+
+			// console.log('not here');
+
 			let cancel = false;
 
 			if (cancel) return;
@@ -64,6 +97,62 @@ function PropertyCard(props) {
 		} catch (err) {
 			console.log(err);
 		}
+	};
+
+	const handleAdminDelete = () => {
+		showModal();
+	};
+
+	const handleUpdatePropertyAdmin = () => {
+		props.navigation.navigate('UpdateUserProperty', {
+			data: data,
+			adminPrevelage: true,
+		});
+	};
+
+	const showAdminActions = () => {
+		return (
+			<List.Section>
+				<List.Accordion
+					expanded={isExpandedUserSettings}
+					onPress={() => setIsExpandedUserSettings(!isExpandedUserSettings)}
+					titleStyle={styles.basicFontStylePrimary}
+					style={styles.userProfileList}
+					title='Admin Actions'
+					left={props => (
+						<List.Icon {...props} icon='account-circle' color='#fff' />
+					)}>
+					<List.Item
+						style={styles.listItems}
+						title='Update Property'
+						onPress={handleUpdatePropertyAdmin}
+						titleStyle={styles.basicFontStyleSecondary}
+						left={props => (
+							<List.Icon
+								{...props}
+								icon='account-edit'
+								color='#fff'
+								style={styles.itemIcons}
+							/>
+						)}
+					/>
+					<List.Item
+						style={styles.listItems}
+						title='Delete Property'
+						onPress={handleAdminDelete}
+						titleStyle={styles.basicFontStyleSecondary}
+						left={props => (
+							<List.Icon
+								{...props}
+								icon='account-minus'
+								color='#fff'
+								style={styles.itemIcons}
+							/>
+						)}
+					/>
+				</List.Accordion>
+			</List.Section>
+		);
 	};
 
 	const editIcon = props => <Icon {...props} name='edit' />;
@@ -128,6 +217,7 @@ function PropertyCard(props) {
 						</KittenButton>
 					)}
 				</Card.Content>
+				{props.adminPrevelage ? showAdminActions() : null}
 			</Card>
 			<Portal>
 				<Modal
@@ -143,12 +233,16 @@ function PropertyCard(props) {
 						</KittentText>
 						<Layout style={styles.modalButtonContainer}>
 							<KittenButton
+								appearance='outline'
 								onPress={handleDelete}
 								status='danger'
 								style={styles.modalButton}>
 								Delete
 							</KittenButton>
-							<KittenButton onPress={hideModal} style={styles.modalButton}>
+							<KittenButton
+								appearance='outline'
+								onPress={hideModal}
+								style={styles.modalButton}>
 								Close
 							</KittenButton>
 						</Layout>
@@ -162,6 +256,7 @@ function PropertyCard(props) {
 const styles = StyleSheet.create({
 	card: {
 		marginBottom: 10,
+		backgroundColor: theme['color-primary-500'],
 	},
 	imageContainer: {
 		flex: 1,
@@ -169,9 +264,8 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		height: 350,
-		width: 250,
+		width: 300,
 		margin: 2,
-		borderRadius: 10,
 	},
 	cardHeader: {
 		backgroundColor: theme['color-primary-400'],
@@ -232,6 +326,23 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		backgroundColor: 'transparent',
 		marginTop: 50,
+	},
+	basicFontStyleSecondary: {
+		color: '#fff',
+		fontWeight: 'bold',
+		fontSize: 13,
+	},
+	listItems: {
+		marginBottom: -10,
+		backgroundColor: theme['color-primary-400'],
+	},
+	basicFontStylePrimary: {
+		color: '#fff',
+		fontWeight: 'bold',
+	},
+	userProfileList: {
+		backgroundColor: theme['color-primary-400'],
+		color: theme['color-primary-400'],
 	},
 });
 

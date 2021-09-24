@@ -42,6 +42,7 @@ function Settings(props) {
 	const handleAgentProfileNavigation = () =>
 		props.navigation.navigate('AgentProfile', {
 			currentAgent,
+			adminUpdate: true,
 		});
 
 	const handleCreatePropertiesNavigation = () =>
@@ -71,6 +72,10 @@ function Settings(props) {
 
 	const handleFeatureListAdminNavigation = () => {
 		props.navigation.navigate('FeatureListAdmin');
+	};
+
+	const handleManagePropertiesNavigation = () => {
+		props.navigation.navigate('ManageProperties');
 	};
 
 	if (loading) {
@@ -262,6 +267,19 @@ function Settings(props) {
 										<List.Icon
 											{...props}
 											icon='account-group'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+								<List.Item
+									title='Manage Properties'
+									titleStyle={styles.basicFontStyleSecondary}
+									onPress={handleManagePropertiesNavigation}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='chart-pie'
 											color='#fff'
 											style={styles.itemIcons}
 										/>

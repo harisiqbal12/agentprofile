@@ -22,10 +22,10 @@ function FavPropertyScreen(props) {
 	// }, []);
 
 	useEffect(() => {
-		console.log('fav property screen');
+		// console.log('fav property screen');
 		// console.log(props.favProperties);
 		if (props.favProperties.length > 0) {
-			console.log('fetching')
+			// console.log('fetching')
 			props.fetchFavPropertiesFromDatabase(props.favProperties);
 		} else {
 			setProperties([]);

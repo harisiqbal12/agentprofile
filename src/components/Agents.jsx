@@ -83,9 +83,6 @@ function Agents(props) {
 			<FlatList
 				refreshing={isRefreshing}
 				onRefresh={handelRefresh}
-				contentContainerStyle={{
-					padding: 16,
-				}}
 				style={styles.flatList}
 				data={searchCompleted ? searchData : currentAgent}
 				renderItem={({ item }) => {

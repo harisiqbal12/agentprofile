@@ -49,7 +49,7 @@ function Property(props) {
 	useEffect(() => {
 		if (fav && !saved) {
 			(async () => {
-				console.log('saving');
+				// console.log('saving');
 				try {
 					await favourites
 						.child('properties')
@@ -59,7 +59,7 @@ function Property(props) {
 							authorID: data.authorID,
 						});
 
-					console.log('saved');
+					// console.log('saved');
 					setSaved(true);
 				} catch (err) {
 					console.log(err);
@@ -68,7 +68,7 @@ function Property(props) {
 		}
 		if (!fav && saved) {
 			(async () => {
-				console.log('removing');
+				// console.log('removing');
 				try {
 					await favourites
 						.child('properties')
@@ -77,7 +77,7 @@ function Property(props) {
 						.remove();
 
 					setSaved(false);
-					console.log('removed');
+					// console.log('removed');
 					props.fetchFavProperties();
 				} catch (err) {
 					console.log(err);
@@ -87,13 +87,13 @@ function Property(props) {
 	}, [fav]);
 
 	useEffect(() => {
-		console.log('useffeect');
-		console.log(props.route.params.data.id);
-		console.log(props.favProperties);
+		// console.log('useffeect');
+		// console.log(props.route.params.data.id);
+		// console.log(props.favProperties);
 		if (props.favProperties.length > 0) {
 			props.favProperties.forEach(itemId => {
 				if (data.id === itemId.id) {
-					console.log('setting state');
+					// console.log('setting state');
 					setFav(true);
 					setSaved(true);
 					setFavKey(itemId.snapID);
@@ -122,7 +122,7 @@ function Property(props) {
 			agentEmail: props.agentByID.email,
 		});
 
-	console.log('fav: ' + fav);
+	// console.log('fav: ' + fav);
 
 	if (loading) {
 		return <Loader />;

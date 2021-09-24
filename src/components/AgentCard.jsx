@@ -6,10 +6,10 @@ import {
 	Modal,
 	Portal,
 	Provider,
+	List,
 } from 'react-native-paper';
-import { Layout, Text, Avatar, Button } from '@ui-kitten/components';
+import { Layout, Text, Avatar, Button, Icon } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
-import { List } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import firebase from 'firebase';
@@ -21,6 +21,8 @@ const AgentCard = props => {
 	const { item } = props;
 	const { adminPrevelage } = props;
 	const [isExpandedUserSettings, setIsExpandedUserSettings] = useState(true);
+	const [showModal, setShowModal] = useState(false);
+	const [modalMessage, setModalMessage] = useState(null);
 
 	const addToFeatureList = async () => {
 		try {
@@ -39,6 +41,33 @@ const AgentCard = props => {
 		} catch (err) {
 			console.log(err);
 		}
+	};
+
+	const hanldeUpdateAgent = () => {
+		props.navigation.navigate('AgentProfile', {
+			currentAgent: item,
+		});
+	};
+
+	const deleteAgent = async () => {
+		try {
+			await firebase.database().ref('agents').child(item.id).remove();
+			await firebase.database().ref('properties').child(item.id).remove();
+			await firebase.database().ref('featureList').child(item.id).remove();
+
+			hideModal();
+			props.showModal('Agent Deleted Successfully')
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const handleDeleteAction = async () => {
+		setShowModal(true);
+	};
+
+	const hideModal = () => {
+		setShowModal(false);
 	};
 
 	const adminActions = () => {
@@ -80,34 +109,98 @@ const AgentCard = props => {
 							/>
 						)}
 					/>
+					<List.Item
+						title='Update Agent'
+						onPress={hanldeUpdateAgent}
+						titleStyle={styles.basicFontStyleSecondary}
+						left={props => (
+							<List.Icon
+								{...props}
+								icon='account-edit'
+								color='#fff'
+								style={styles.itemIcons}
+							/>
+						)}
+					/>
+					<List.Item
+						title='Delete Agent'
+						onPress={handleDeleteAction}
+						titleStyle={styles.basicFontStyleSecondary}
+						left={props => (
+							<List.Icon
+								{...props}
+								icon='account-minus'
+								color='#fff'
+								style={styles.itemIcons}
+							/>
+						)}
+					/>
 				</List.Accordion>
 			</List.Section>
 		);
 	};
 
 	return (
-		<Card style={styles.agentCard}>
-			<Layout style={styles.agentProfile}>
-				<Text style={styles.agentName}>{item.displayName}</Text>
-				<Text style={styles.agentListedProperties}>
-					Listed Properties {item.listingProperties}
-				</Text>
-				<Text style={styles.agentListedPropertiesNumber}>
-					{item.listedProperties}
-				</Text>
-				<Avatar
-					style={styles.avatar}
-					size='giant'
-					source={{ uri: item.profileURL }}
-				/>
-			</Layout>
+		<Provider>
+			<Card style={styles.agentCard}>
+				<Layout style={styles.agentProfile}>
+					<Text style={styles.agentName}>{item.displayName}</Text>
+					<Text style={styles.agentListedProperties}>
+						Listed Properties {item.listingProperties}
+					</Text>
+					<Text style={styles.agentListedPropertiesNumber}>
+						{item.listedProperties}
+					</Text>
+					<Avatar
+						style={styles.avatar}
+						size='giant'
+						source={{ uri: item.profileURL }}
+					/>
+				</Layout>
 
-			<Card.Content>
-				<Title style={styles.agentNumber}>Mobile: {item.mobile}</Title>
-				<Title style={styles.agentEmail}>{item.email}</Title>
-			</Card.Content>
-			{adminPrevelage && adminActions()}
-		</Card>
+				<Card.Content>
+					<Title style={styles.agentNumber}>Mobile: {item.mobile}</Title>
+					<Title style={styles.agentEmail}>{item.email}</Title>
+				</Card.Content>
+				{adminPrevelage && adminActions()}
+			</Card>
+			<Portal>
+				<Modal
+					visible={showModal}
+					onDismiss={hideModal}
+					contentContainerStyle={styles.modal}>
+					<Layout style={styles.modalContainer}>
+						<Icon
+							style={styles.icon}
+							name='alert-circle'
+							fill={theme['color-primary-500']}
+						/>
+
+						<Text style={styles.textModal}>
+							Deleting An Agent Will Permanently Delete The Agent From Database
+							And All Its Respective Listings.
+						</Text>
+						{/* <Text style={styles.textModal}>{email}</Text> */}
+						<Layout style={styles.modalButtonContainer}>
+							<Button
+								status='success'
+								appearance='outline'
+								onPress={hideModal}
+								style={styles.modalButton}>
+								Close
+							</Button>
+							<Button
+								status='danger'
+								appearance='outline'
+								onPress={deleteAgent}
+								style={styles.modalButton}>
+								Delete
+							</Button>
+						</Layout>
+					</Layout>
+				</Modal>
+			</Portal>
+		</Provider>
 	);
 };
 
@@ -203,6 +296,43 @@ const styles = StyleSheet.create({
 	},
 	listItems: {
 		marginBottom: -10,
+	},
+	modal: {
+		width: 250,
+		height: 250,
+		alignSelf: 'center',
+	},
+	modalContainer: {
+		backgroundColor: '#fff',
+		borderRadius: 10,
+		height: '100%',
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 0.5,
+		borderColor: '#fff',
+	},
+	modalButtonContainer: {
+		backgroundColor: 'transparent',
+		marginTop: '15%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
+	icon: {
+		width: 100,
+		height: 100,
+	},
+	modalButton: {
+		width: 100,
+		margin: 10,
+	},
+	textModal: {
+		color: theme['color-primary-500'],
+		fontWeight: 'bold',
+		fontSize: 12,
+		textAlign: 'center',
+		width: 200,
 	},
 });
 

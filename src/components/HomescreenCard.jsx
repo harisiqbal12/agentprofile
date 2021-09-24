@@ -11,6 +11,7 @@ import { default as theme } from '../theme/custom-theme.json';
 import {
 	// fetchFaveAgents,
 	fetchFavAgents,
+	showModal,
 } from '../redux/actions/index';
 
 function HomescreenCard(props) {
@@ -43,6 +44,8 @@ function HomescreenCard(props) {
 	}, []);
 
 	useEffect(() => {
+		let count = 0;
+		console.log('agent property \n\n\n\n');
 		if (props.agentProperty) {
 			props.agentProperty.forEach((property, index) => {
 				if (property.authorID === id) {
@@ -50,7 +53,10 @@ function HomescreenCard(props) {
 				}
 			});
 		}
-	}, [props.agentProperty]);
+
+	}, [props.executeAgain]);
+
+
 
 	useEffect(() => {
 		if (fav && !saved) {
@@ -72,12 +78,12 @@ function HomescreenCard(props) {
 		if (fav === false && saved) {
 			(async () => {
 				try {
-					console.log('removing');
+					// console.log('removing');
 					favouritesRef
 						.child('agents')
 						.child(firebase.auth().currentUser.uid)
 						.on('child_added', snapshot => {
-							console.log(snapshot.val().agentID === id);
+							// console.log(snapshot.val().agentID === id);
 							if (snapshot.val().agentID === id) {
 								setFavKey(snapshot.key);
 							}
@@ -313,6 +319,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-	bindActionCreators({ fetchFavAgents }, dispatch);
+	bindActionCreators({ fetchFavAgents, showModal }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomescreenCard);

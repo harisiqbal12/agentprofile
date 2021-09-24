@@ -5,9 +5,10 @@ import CreateProperties from './CreateProperties';
 
 function UpdateUserProperty(props) {
 	const { data } = props.route.params;
-	console.log(data);
+	const { adminPrevelage } = props.route.params;
+	// console.log(data);
 
-	return <CreateProperties title={'Update Property'} data={data} />;
+	return <CreateProperties adminPrevelage={adminPrevelage} title={'Update Property'} data={data} />;
 }
 
 export default UpdateUserProperty;
