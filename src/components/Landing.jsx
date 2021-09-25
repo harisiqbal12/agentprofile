@@ -37,7 +37,9 @@ function Landing({ navigation }) {
 					{' '}
 					login
 				</Button>
-				<TouchableOpacity onPress={handleResetNavigation} style={styles.lostPasswordContainer}>
+				<TouchableOpacity
+					onPress={handleResetNavigation}
+					style={styles.lostPasswordContainer}>
 					<Text style={styles.lostPassword}>Lost Your Password?</Text>
 				</TouchableOpacity>
 			</Layout>
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
 	},
 	lostPasswordContainer: {
 		marginTop: 10,
+		marginBottom: 30,
 	},
 	line: {
 		borderBottomColor: '#fff',

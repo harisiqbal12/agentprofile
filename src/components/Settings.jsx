@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { SafeAreaView, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	ScrollView,
+	View,
+} from 'react-native';
 import { Text, Layout, Avatar, Icon, Button, Card } from '@ui-kitten/components';
 import { List } from 'react-native-paper';
 import Loader from './Loader';
@@ -83,199 +89,98 @@ function Settings(props) {
 	}
 
 	return (
-		<SafeAreaView style={styles.settingContainer}>
-			<ScrollView style={styles.scrollView}>
-				<Layout style={styles.userProfileContainer}>
-					<Avatar
-						style={styles.userProfile}
-						size='giant'
-						source={require('../../assets/weblogo.png')}
-					/>
-					<Text style={styles.userProfileTitle}>@ {currentUser.displayName}</Text>
-				</Layout>
-				<Layout style={styles.listContainer}>
-					<List.Section>
-						<List.Accordion
-							expanded={isExpandedUserSettings}
-							onPress={() => setIsExpandedUserSettings(!isExpandedUserSettings)}
-							titleStyle={styles.basicFontStylePrimary}
-							style={styles.userProfileList}
-							title='User Settings'
-							left={props => (
-								<List.Icon {...props} icon='account-circle' color='#fff' />
-							)}>
-							<List.Item
-								onPress={hanldeProfileNavigate}
-								title='My Profile'
-								titleStyle={styles.basicFontStyleSecondary}
-								style={styles.listItems}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='account-circle'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}></List.Item>
-
-							<List.Item
-								title='Agent Settings'
-								onPress={handleAgentProfileNavigation}
-								titleStyle={styles.basicFontStyleSecondary}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='account-cog'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-							<List.Item
-								onPress={handleFavAgentsNavigation}
-								title='Favourite Agents'
-								titleStyle={styles.basicFontStyleSecondary}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='heart'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-						</List.Accordion>
-						<List.Accordion
-							expanded={isExpanedProperties}
-							onPress={() => setIsExpandedProperties(!isExpanedProperties)}
-							titleStyle={styles.basicFontStylePrimary}
-							style={styles.userProfileList}
-							title='Properties'
-							left={props => (
-								<List.Icon {...props} icon='chart-pie' color='#fff' />
-							)}>
-							<List.Item
-								onPress={handleCreatePropertiesNavigation}
-								title='Create Property'
-								titleStyle={styles.basicFontStyleSecondary}
-								style={styles.listItems}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='note-plus'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-							<List.Item
-								title='My Properties'
-								titleStyle={styles.basicFontStyleSecondary}
-								onPress={handleMyPropertiesNavigation}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='chart-pie'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-							<List.Item
-								onPress={handleFavPropertyNavigation}
-								title='Favourite Properties'
-								titleStyle={styles.basicFontStyleSecondary}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='heart'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-						</List.Accordion>
-						<List.Accordion
-							expanded={isExpandedAccountSettings}
-							onPress={() =>
-								setIsExpandedAccountSettings(!isExpandedAccountSettings)
-							}
-							titleStyle={styles.basicFontStylePrimary}
-							style={styles.userProfileList}
-							title='Account Settings'
-							left={props => (
-								<List.Icon {...props} icon='account-cog' color='#fff' />
-							)}>
-							<List.Item
-								onPress={onLogout}
-								title='Logout'
-								titleStyle={styles.basicFontStyleSecondary}
-								style={styles.listItems}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='logout'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-							<List.Item
-								onPress={handleContactNavigation}
-								title='Contact'
-								titleStyle={styles.basicFontStyleSecondary}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='email-multiple'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-							<List.Item
-								title='About us'
-								titleStyle={styles.basicFontStyleSecondary}
-								onPress={handleAboutNavigation}
-								left={props => (
-									<List.Icon
-										{...props}
-										icon='help-circle'
-										color='#fff'
-										style={styles.itemIcons}
-									/>
-								)}
-							/>
-						</List.Accordion>
-						{isAdmin ? (
+		<View style={styles.root}>
+			<SafeAreaView style={styles.settingContainer}>
+				<ScrollView style={styles.scrollView}>
+					<Layout style={styles.userProfileContainer}>
+						<Avatar
+							style={styles.userProfile}
+							size='giant'
+							source={require('../../assets/weblogo.png')}
+						/>
+						<Text style={styles.userProfileTitle}>
+							@ {currentUser.displayName}
+						</Text>
+					</Layout>
+					<Layout style={styles.listContainer}>
+						<List.Section>
 							<List.Accordion
-								onPress={() =>
-									setIsExpandedAdminSettings(!isExpandedAdminSettings)
-								}
-								expanded={isExpandedAdminSettings}
+								expanded={isExpandedUserSettings}
+								onPress={() => setIsExpandedUserSettings(!isExpandedUserSettings)}
 								titleStyle={styles.basicFontStylePrimary}
 								style={styles.userProfileList}
-								title='Admin Settings'
+								title='User Settings'
 								left={props => (
-									<List.Icon {...props} icon='account-cog' color='#fff' />
+									<List.Icon {...props} icon='account-circle' color='#fff' />
 								)}>
 								<List.Item
-									title='Manage Users'
+									onPress={hanldeProfileNavigate}
+									title='My Profile'
 									titleStyle={styles.basicFontStyleSecondary}
-									onPress={handleFeatureListAdminNavigation}
+									style={styles.listItems}
 									left={props => (
 										<List.Icon
 											{...props}
-											icon='account-group'
+											icon='account-circle'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}></List.Item>
+
+								<List.Item
+									title='Agent Settings'
+									onPress={handleAgentProfileNavigation}
+									titleStyle={styles.basicFontStyleSecondary}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='account-cog'
 											color='#fff'
 											style={styles.itemIcons}
 										/>
 									)}
 								/>
 								<List.Item
-									title='Manage Properties'
+									onPress={handleFavAgentsNavigation}
+									title='Favourite Agents'
 									titleStyle={styles.basicFontStyleSecondary}
-									onPress={handleManagePropertiesNavigation}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='heart'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+							</List.Accordion>
+							<List.Accordion
+								expanded={isExpanedProperties}
+								onPress={() => setIsExpandedProperties(!isExpanedProperties)}
+								titleStyle={styles.basicFontStylePrimary}
+								style={styles.userProfileList}
+								title='Properties'
+								left={props => (
+									<List.Icon {...props} icon='chart-pie' color='#fff' />
+								)}>
+								<List.Item
+									onPress={handleCreatePropertiesNavigation}
+									title='Create Property'
+									titleStyle={styles.basicFontStyleSecondary}
+									style={styles.listItems}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='note-plus'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+								<List.Item
+									title='My Properties'
+									titleStyle={styles.basicFontStyleSecondary}
+									onPress={handleMyPropertiesNavigation}
 									left={props => (
 										<List.Icon
 											{...props}
@@ -285,12 +190,117 @@ function Settings(props) {
 										/>
 									)}
 								/>
+								<List.Item
+									onPress={handleFavPropertyNavigation}
+									title='Favourite Properties'
+									titleStyle={styles.basicFontStyleSecondary}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='heart'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
 							</List.Accordion>
-						) : null}
-					</List.Section>
-				</Layout>
-			</ScrollView>
-		</SafeAreaView>
+							<List.Accordion
+								expanded={isExpandedAccountSettings}
+								onPress={() =>
+									setIsExpandedAccountSettings(!isExpandedAccountSettings)
+								}
+								titleStyle={styles.basicFontStylePrimary}
+								style={styles.userProfileList}
+								title='Account Settings'
+								left={props => (
+									<List.Icon {...props} icon='account-cog' color='#fff' />
+								)}>
+								<List.Item
+									onPress={onLogout}
+									title='Logout'
+									titleStyle={styles.basicFontStyleSecondary}
+									style={styles.listItems}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='logout'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+								<List.Item
+									onPress={handleContactNavigation}
+									title='Contact'
+									titleStyle={styles.basicFontStyleSecondary}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='email-multiple'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+								<List.Item
+									title='About us'
+									titleStyle={styles.basicFontStyleSecondary}
+									onPress={handleAboutNavigation}
+									left={props => (
+										<List.Icon
+											{...props}
+											icon='help-circle'
+											color='#fff'
+											style={styles.itemIcons}
+										/>
+									)}
+								/>
+							</List.Accordion>
+							{isAdmin ? (
+								<List.Accordion
+									onPress={() =>
+										setIsExpandedAdminSettings(!isExpandedAdminSettings)
+									}
+									expanded={isExpandedAdminSettings}
+									titleStyle={styles.basicFontStylePrimary}
+									style={styles.userProfileList}
+									title='Admin Settings'
+									left={props => (
+										<List.Icon {...props} icon='account-cog' color='#fff' />
+									)}>
+									<List.Item
+										title='Manage Users'
+										titleStyle={styles.basicFontStyleSecondary}
+										onPress={handleFeatureListAdminNavigation}
+										left={props => (
+											<List.Icon
+												{...props}
+												icon='account-group'
+												color='#fff'
+												style={styles.itemIcons}
+											/>
+										)}
+									/>
+									<List.Item
+										title='Manage Properties'
+										titleStyle={styles.basicFontStyleSecondary}
+										onPress={handleManagePropertiesNavigation}
+										left={props => (
+											<List.Icon
+												{...props}
+												icon='chart-pie'
+												color='#fff'
+												style={styles.itemIcons}
+											/>
+										)}
+									/>
+								</List.Accordion>
+							) : null}
+						</List.Section>
+					</Layout>
+				</ScrollView>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -298,12 +308,11 @@ const styles = StyleSheet.create({
 	settingContainer: {
 		flex: 1,
 		paddingTop: StatusBar.currentHeight,
-		backgroundColor: '#fff',
 	},
 
 	scrollView: {
 		flex: 1,
-		backgroundColor: theme['color-primary-300'],
+		backgroundColor: theme['color-primary-500'],
 	},
 
 	userProfileContainer: {
@@ -312,7 +321,7 @@ const styles = StyleSheet.create({
 		paddingTop: 20,
 		paddingBottom: 20,
 		marginTop: StatusBar.currentHeight,
-		backgroundColor: theme['color-primary-300'],
+		backgroundColor: theme['color-primary-500'],
 		flexDirection: 'row',
 		alignItems: 'center',
 		flexWrap: 'wrap',
@@ -329,10 +338,10 @@ const styles = StyleSheet.create({
 		left: 10,
 	},
 	listContainer: {
-		backgroundColor: theme['color-primary-300'],
+		backgroundColor: theme['color-primary-500'],
 	},
 	userProfileList: {
-		backgroundColor: theme['color-primary-400'],
+		backgroundColor: theme['color-primary-700'],
 		color: theme['color-primary-400'],
 	},
 	basicFontStylePrimary: {
@@ -348,6 +357,10 @@ const styles = StyleSheet.create({
 		marginBottom: -10,
 	},
 	itemIcons: {},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700'],
+	},
 });
 
 mapStateToProps = store => ({

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+
 import { Layout, Text, Input, Button, Icon } from '@ui-kitten/components';
 import { SafeAreaView, StyleSheet, StatusBar, Image } from 'react-native';
 import emailjs from 'emailjs-com';
@@ -129,6 +131,7 @@ function Contact(props) {
 					</Button>
 				</Layout>
 			</Layout>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

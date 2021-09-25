@@ -1,4 +1,5 @@
 import React from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { ApplicationProvider, Layout, Spinner } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { StyleSheet } from 'react-native';
@@ -10,6 +11,7 @@ const Loader = () => (
 		<Layout style={styles.loadingContainer}>
 			<Spinner size='large' />
 		</Layout>
+		<ExpoStatusBar style='dark' />
 	</ApplicationProvider>
 );
 

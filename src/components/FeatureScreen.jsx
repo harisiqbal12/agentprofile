@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	StatusBar,
 	FlatList,
+	View,
 	TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,7 +16,6 @@ import { Layout, Text } from '@ui-kitten/components';
 import { fetchFeaturedAgents } from '../redux/actions';
 import AgentCard from './AgentCard';
 import Loader from './Loader';
-
 
 import { default as theme } from '../theme/custom-theme.json';
 
@@ -72,37 +72,38 @@ function FeatureScreen(props) {
 	}
 
 	return (
-		<SafeAreaView style={styles.agentContainer}>
-			<Searchbar
-				theme={{ colors: { primary: '#fff' } }}
-				style={styles.searchBar}
-				placeholder='Search featured agents'
-				onChangeText={search}
-				inputStyle={{ color: '#fff' }}
-				placeholderTextColor='#fff'
-				iconColor='#fff'
-			/>
-			<Layout style={styles.titleContainer}>
-				<Text style={styles.headerTitle}>Weekly Featured Agents</Text>
-			</Layout>
-			<FlatList
-				refreshing={isRefreshing}
-				onRefresh={handelRefresh}
-				contentContainerStyle={{
-				}}
-				style={styles.flatList}
-				data={searchCompleted ? searchData : currentAgent}
-				renderItem={({ item }) => {
-					return (
-						<TouchableOpacity
-							onPress={() => handleListingPropertiessNavigaiton(item)}>
-							<AgentCard item={item} />
-						</TouchableOpacity>
-					);
-				}}
-				keyExtractor={item => item.id}
-			/>
-		</SafeAreaView>
+		<View style={styles.root}>
+			<SafeAreaView style={styles.agentContainer}>
+				<Searchbar
+					theme={{ colors: { primary: '#fff' } }}
+					style={styles.searchBar}
+					placeholder='Search featured agents'
+					onChangeText={search}
+					inputStyle={{ color: '#fff' }}
+					placeholderTextColor='#fff'
+					iconColor='#fff'
+				/>
+				<Layout style={styles.titleContainer}>
+					<Text style={styles.headerTitle}>Weekly Featured Agents</Text>
+				</Layout>
+				<FlatList
+					refreshing={isRefreshing}
+					onRefresh={handelRefresh}
+					contentContainerStyle={{}}
+					style={styles.flatList}
+					data={searchCompleted ? searchData : currentAgent}
+					renderItem={({ item }) => {
+						return (
+							<TouchableOpacity
+								onPress={() => handleListingPropertiessNavigaiton(item)}>
+								<AgentCard item={item} />
+							</TouchableOpacity>
+						);
+					}}
+					keyExtractor={item => item.id}
+				/>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -128,8 +129,12 @@ const styles = StyleSheet.create({
 	headerTitle: {
 		fontSize: 25,
 		fontWeight: 'bold',
-		color: theme['color-primary-300'],
+		color: theme['color-primary-200'],
 		fontFamily: 'Roboto_400Regular',
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700']
 	},
 });
 

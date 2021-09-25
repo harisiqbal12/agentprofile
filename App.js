@@ -45,7 +45,7 @@ export default function App() {
 				<IconRegistry icons={EvaIconsPack} />
 				<ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
 					<Navigation />
-					<StatusBar style='auto' />
+					<StatusBar style='light' />
 				</ApplicationProvider>
 			</Provider>
 		</>

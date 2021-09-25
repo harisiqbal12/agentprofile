@@ -1,4 +1,6 @@
 import React from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+
 import { Layout, Text, Icon } from '@ui-kitten/components';
 import {
 	StyleSheet,
@@ -64,6 +66,7 @@ function About() {
 					</Text>
 				</Layout>
 			</Layout>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

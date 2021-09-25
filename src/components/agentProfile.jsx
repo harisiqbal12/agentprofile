@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { Input, Layout, Button } from '@ui-kitten/components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -19,9 +20,6 @@ import SpinnerSmall from './spinnerSmall';
 
 function AgentProfile(props) {
 	const { currentAgent } = props.route.params;
-	console.log('\n\n\n');
-	console.log(currentAgent);
-	console.log(currentAgent.uid);
 
 	const [isLoading, setLoading] = useState(false);
 	const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
@@ -254,6 +252,7 @@ function AgentProfile(props) {
 					</Button>
 				</Layout>
 			</ScrollView>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

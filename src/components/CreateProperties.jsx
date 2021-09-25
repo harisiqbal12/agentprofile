@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import {
 	StyleSheet,
 	SafeAreaView,
@@ -62,6 +63,39 @@ function CreateProperties(props) {
 	const [imageUpdateUrlTwo, setImageUpdateUrlTwo] = useState(null);
 	const [imageUpdateUrlThree, setImageUpdateThree] = useState(null);
 	const [updateFirebase, setUpdatefirebase] = useState(false);
+
+	const clearFields = () => {
+		setSelectBedrooms('');
+		setSelectedBathrooms('');
+		setSelectedGarage('');
+		setAirCondition(false);
+		setDeck(false);
+		setBuiltInRobes(false);
+		setGarden(false);
+		setFullyFenced(false);
+		setOutdoorEntertainingArea(false);
+		setFloorboards(false);
+		setDishwasher(false);
+		setBalcony(false);
+		setBuildInWardrobes(false);
+		setCourtyard(false);
+
+		setPropertyName('');
+		setPropertyAddress('');
+		setPropertyPrice('');
+		setPropertyDescrip('');
+		setPropertyArea('');
+
+		setImageOne(
+			'https://warnaturbo.b-cdn.net/tutorial/wp-content/uploads/2020/07/01-Add-Change-Picture-in-Image-Placeholder-in-PowerPoint-Template-WarnaSlides.com_.jpg'
+		);
+		setImageTwo(
+			'https://warnaturbo.b-cdn.net/tutorial/wp-content/uploads/2020/07/01-Add-Change-Picture-in-Image-Placeholder-in-PowerPoint-Template-WarnaSlides.com_.jpg'
+		);
+		setImageThree(
+			'https://warnaturbo.b-cdn.net/tutorial/wp-content/uploads/2020/07/01-Add-Change-Picture-in-Image-Placeholder-in-PowerPoint-Template-WarnaSlides.com_.jpg'
+		);
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -211,10 +245,6 @@ function CreateProperties(props) {
 			}
 
 			if (!parseInt(propertyPrice)) {
-				throw new Error('Enter A Valid Price');
-			}
-
-			if (!parseInt(propertyArea)) {
 				throw new Error('Enter A Valid Price');
 			}
 
@@ -482,6 +512,7 @@ function CreateProperties(props) {
 			await props.fetchAgentProperites(currentUser.uid);
 
 			setLoading(false);
+			clearFields();
 		} catch (err) {}
 	};
 
@@ -576,9 +607,7 @@ function CreateProperties(props) {
 								value={propertyPrice}
 								onChangeText={t => setPropertyPrice(t)}
 							/>
-							<Text style={styles.inputPlaceholder}>
-								Enter property Area in sq ft
-							</Text>
+							<Text style={styles.inputPlaceholder}>Enter property Area</Text>
 							<Input
 								style={styles.input}
 								placeholder='Property Area'
@@ -762,6 +791,7 @@ function CreateProperties(props) {
 					</Modal>
 				</Portal>
 			</SafeAreaView>
+			<ExpoStatusBar style='dark' />
 		</Provider>
 	);
 }

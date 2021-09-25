@@ -36,7 +36,12 @@ function PropertyCard(props) {
 	// }, []);
 
 	const { data } = props;
-	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
+	let formatedNumber = '';
+	if (data.propertyPrice > 100) {
+		formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
+	} else {
+		formatedNumber = 'SOLD';
+	}
 
 	const handlePropertyNavigation = () =>
 		props.navigation.navigate('Property', {

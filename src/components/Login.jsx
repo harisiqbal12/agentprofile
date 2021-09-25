@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Layout, Button, Input, Text, Icon } from '@ui-kitten/components';
 import firebase from 'firebase';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import SpinnerSmall from './spinnerSmall';
+
+import { default as theme } from '../theme/custom-theme.json';
 
 function Login() {
 	const [email, setEmail] = useState('');
@@ -48,44 +50,49 @@ function Login() {
 			// console.log(err.message);
 			setLoading(false);
 			setIsPasswordError(true);
-			setPasswordError(err.message)
-
+			setPasswordError(err.message);
 		}
 	};
 
 	return (
-		<Layout style={styles.loginContainer}>
-			<Layout style={styles.titleContainer}>
-				<Icon style={styles.icon} fill='#8F9BB3' name='people' />
-				<Text style={styles.title}>Login</Text>
+		<View style={styles.root}>
+			<Layout style={styles.loginContainer}>
+				<Layout style={styles.titleContainer}>
+					<Icon
+						style={styles.icon}
+						fill={theme['color-primary-100']}
+						name='people'
+					/>
+					<Text style={styles.title}>Login</Text>
+				</Layout>
+				<Layout style={styles.buttonContainer}>
+					<Input
+						label={emailError}
+						size='large'
+						style={styles.input}
+						placeholder='Email'
+						accessoryLeft={() => inputIcon('email')}
+						value={email}
+						status={isEmailError && 'danger'}
+						onChangeText={t => setEmail(t)}
+					/>
+					<Input
+						label={passwordError}
+						status={isPasswordError && 'danger'}
+						value={password}
+						secureTextEntry
+						size='large'
+						style={styles.input}
+						placeholder='Password'
+						accessoryLeft={() => inputIcon('lock')}
+						onChangeText={t => setPassword(t)}
+					/>
+					<Button accessoryLeft={loading && SpinnerSmall} onPress={handleLogin}>
+						{!loading && 'login'}
+					</Button>
+				</Layout>
 			</Layout>
-			<Layout style={styles.buttonContainer}>
-				<Input
-					label={emailError}
-					size='large'
-					style={styles.input}
-					placeholder='Email'
-					accessoryLeft={() => inputIcon('email')}
-					value={email}
-					status={isEmailError && 'danger'}
-					onChangeText={t => setEmail(t)}
-				/>
-				<Input
-					label={passwordError}
-					status={isPasswordError && 'danger'}
-					value={password}
-					secureTextEntry
-					size='large'
-					style={styles.input}
-					placeholder='Password'
-					accessoryLeft={() => inputIcon('lock')}
-					onChangeText={t => setPassword(t)}
-				/>
-				<Button accessoryLeft={loading && SpinnerSmall} onPress={handleLogin}>
-					{!loading && 'login'}
-				</Button>
-			</Layout>
-		</Layout>
+		</View>
 	);
 }
 
@@ -94,20 +101,24 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: 'transparent',
 	},
 	titleContainer: {
 		flex: 0.3,
 		justifyContent: 'center',
+		backgroundColor: 'transparent',
 	},
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
-		color: '#8F9BB3',
+		color: theme['color-primary-100'],
 		fontFamily: 'Roboto_400Regular',
 		textAlign: 'center',
+		backgroundColor: 'transparent',
 	},
 	buttonContainer: {
 		flex: 0.3,
+		backgroundColor: 'transparent',
 	},
 	icon: {
 		height: 100,
@@ -116,10 +127,15 @@ const styles = StyleSheet.create({
 	input: {
 		width: 300,
 		marginBottom: 10,
+		backgroundColor: theme['color-primary-100'],
 	},
 	inputIcon: {
 		width: 20,
 		height: 20,
+	},
+	root: {
+		backgroundColor: theme['color-primary-400'],
+		flex: 1,
 	},
 });
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { Layout, Text } from '@ui-kitten/components';
 import { StyleSheet, FlatList, SafeAreaView, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
@@ -44,9 +45,13 @@ function FavScreen(props) {
 	}
 
 	if (!currentAgent.length > 0) {
-		return <NotFound title='No Favourite Agent Found' />;
+		return (
+			<React.Fragment>
+				<NotFound title='No Favourite Agent Found' />
+				<ExpoStatusBar style='dark' />
+			</React.Fragment>
+		);
 	}
-
 
 	return (
 		<SafeAreaView style={styles.SafeAreaView}>
@@ -71,6 +76,7 @@ function FavScreen(props) {
 				}}
 				keyExtractor={item => item.id}
 			/>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

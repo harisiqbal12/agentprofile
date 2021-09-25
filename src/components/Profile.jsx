@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import {
 	StyleSheet,
 	SafeAreaView,
@@ -85,6 +86,7 @@ function Profile(props) {
 					</Button>
 				</Layout>
 			</Layout>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

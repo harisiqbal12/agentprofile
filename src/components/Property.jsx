@@ -7,6 +7,7 @@ import {
 	ScrollView,
 	Image,
 	TouchableOpacity,
+	View,
 } from 'react-native';
 import formate from 'format-number';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -31,7 +32,13 @@ function Property(props) {
 	const [loading, setLoading] = useState(false);
 	const favourites = firebase.database().ref('favourites');
 	const { data } = props.route.params;
-	const formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
+	let formatedNumber = '';
+
+	if (data.propertyPrice > 100) {
+		formatedNumber = formate({ prefix: '$' })(data.propertyPrice);
+	} else {
+		formatedNumber = 'SOLD';
+	}
 
 	useEffect(() => {
 		setLoading(true);
@@ -129,269 +136,278 @@ function Property(props) {
 	}
 
 	return (
-		<SafeAreaView style={styles.SafeAreaView}>
-			<ScrollView>
-				<Layout style={styles.mainContainer}>
-					<Layout style={styles.header}>
-						<Text style={styles.heading}>{data.propertyName}</Text>
-						<Text style={styles.paragraph}>{data.propertyAddress}</Text>
-					</Layout>
-					<Layout style={styles.imageSliderContainer}>
-						<ScrollView
-							pagingEnabled={true}
-							style={styles.imageSlider}
-							horizontal={true}>
-							<Image
-								style={styles.sliderImage}
-								source={{ uri: data.images[0] }}
-							/>
-							<Image
-								style={styles.sliderImage}
-								source={{ uri: data.images[1] }}
-							/>
-							<Image
-								style={styles.sliderImage}
-								source={{ uri: data.images[2] }}
-							/>
-						</ScrollView>
-					</Layout>
-					<Layout style={styles.contentContainer}>
-						<Layout style={styles.contentContainerText}>
-							<TouchableOpacity onPress={e => setFav(!fav)}>
-								<MaterialCommunityIcons
-									color={theme['color-primary-400']}
-									size={24}
-									name={fav ? 'heart' : 'heart-outline'}
+		<View style={styles.root}>
+			<SafeAreaView style={styles.SafeAreaView}>
+				<ScrollView>
+					<Layout style={styles.mainContainer}>
+						<Layout style={styles.header}>
+							<Text style={styles.heading}>{data.propertyName}</Text>
+							<Text style={styles.paragraph}>{data.propertyAddress}</Text>
+						</Layout>
+						<Layout style={styles.imageSliderContainer}>
+							<ScrollView
+								pagingEnabled={true}
+								style={styles.imageSlider}
+								horizontal={true}>
+								<Image
+									style={styles.sliderImage}
+									source={{ uri: data.images[0] }}
 								/>
-							</TouchableOpacity>
+								<Image
+									style={styles.sliderImage}
+									source={{ uri: data.images[1] }}
+								/>
+								<Image
+									style={styles.sliderImage}
+									source={{ uri: data.images[2] }}
+								/>
+							</ScrollView>
 						</Layout>
-
-						<Text style={[styles.heading, styles.secondaryHeading, styles.price]}>
-							{formatedNumber}
-						</Text>
-
-						<Layout style={styles.secondaryContentContainer}>
-							<Layout style={styles.iconContainer}>
-								<Layout style={styles.iconContainerSecondary}>
-									<Text style={styles.secondaryText}>Bedrooms</Text>
-									<Layout style={styles.icon}>
-										<MaterialCommunityIcons
-											color={theme['color-primary-400']}
-											size={24}
-											name='bed-empty'
-										/>
-										<Text style={styles.iconText}>{data.bedrooms}</Text>
-									</Layout>
-								</Layout>
-
-								<Layout style={styles.iconContainerSecondary}>
-									<Text style={styles.secondaryText}>Bathrooms</Text>
-									<Layout style={styles.icon}>
-										<MaterialCommunityIcons
-											color={theme['color-primary-400']}
-											size={24}
-											name='shower-head'
-										/>
-										<Text style={styles.iconText}>{data.bathrooms}</Text>
-									</Layout>
-								</Layout>
-
-								<Layout style={styles.iconContainerSecondary}>
-									<Text style={styles.secondaryText}>Area</Text>
-									<Layout style={styles.icon}>
-										<MaterialCommunityIcons
-											color={theme['color-primary-400']}
-											size={24}
-											name='vector-square'
-										/>
-										<Text style={styles.iconText}>{data.propertyArea}ft</Text>
-									</Layout>
-								</Layout>
-
-								<Layout style={styles.iconContainerSecondary}>
-									<Text style={styles.secondaryText}>Garage</Text>
-									<Layout style={styles.icon}>
-										<MaterialCommunityIcons
-											color={theme['color-primary-400']}
-											size={24}
-											name='garage'
-										/>
-										<Text style={styles.iconText}>{data.garage}</Text>
-									</Layout>
-								</Layout>
+						<Layout style={styles.contentContainer}>
+							<Layout style={styles.contentContainerText}>
+								<TouchableOpacity onPress={e => setFav(!fav)}>
+									<MaterialCommunityIcons
+										color={theme['color-primary-400']}
+										size={24}
+										name={fav ? 'heart' : 'heart-outline'}
+									/>
+								</TouchableOpacity>
 							</Layout>
-						</Layout>
 
-						<Layout style={styles.description}>
-							<Text style={[styles.heading, styles.secondaryHeading]}>
-								Description
-							</Text>
-							<Text style={styles.descriptionText}>{data.propertyDescript}</Text>
-						</Layout>
-
-						<Layout style={styles.featureContainer}>
-							<Text style={[styles.heading, styles.secondaryHeading]}>
-								Features
+							<Text
+								style={[styles.heading, styles.secondaryHeading, styles.price]}>
+								{formatedNumber}
 							</Text>
 
-							<Layout style={styles.featuresContainerMain}>
-								<Layout style={styles.featureColumnOne}>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.airCondition
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Air Conditioning</Text>
+							<Layout style={styles.secondaryContentContainer}>
+								<Layout style={styles.iconContainer}>
+									<Layout style={styles.iconContainerSecondary}>
+										<Text style={styles.secondaryText}>Bedrooms</Text>
+										<Layout style={styles.icon}>
+											<MaterialCommunityIcons
+												color={theme['color-primary-400']}
+												size={24}
+												name='bed-empty'
+											/>
+											<Text style={styles.iconText}>{data.bedrooms}</Text>
+										</Layout>
 									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.balcony ? 'check-circle' : 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Balcony</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.builtInRobes
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Built-In-Robes</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.builtInWardrobes
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Built-In-Wardrobes</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.courtyard ? 'check-circle' : 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Courtyard</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.deck ? 'check-circle' : 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Deck</Text>
-									</Layout>
-								</Layout>
 
-								<Layout style={[styles.featureColumnOne, styles.marginLeft]}>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.dishWasher ? 'check-circle' : 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Dishwasher</Text>
+									<Layout style={styles.iconContainerSecondary}>
+										<Text style={styles.secondaryText}>Bathrooms</Text>
+										<Layout style={styles.icon}>
+											<MaterialCommunityIcons
+												color={theme['color-primary-400']}
+												size={24}
+												name='shower-head'
+											/>
+											<Text style={styles.iconText}>{data.bathrooms}</Text>
+										</Layout>
 									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.floorboards
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Floorboards</Text>
+
+									<Layout style={styles.iconContainerSecondary}>
+										<Text style={styles.secondaryText}>Area</Text>
+										<Layout style={styles.icon}>
+											<MaterialCommunityIcons
+												color={theme['color-primary-400']}
+												size={24}
+												name='vector-square'
+											/>
+											<Text style={styles.iconText}>{data.propertyArea}</Text>
+										</Layout>
 									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.fullyFenced
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Fully Fenced</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.garden ? 'check-circle' : 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>Garden</Text>
-									</Layout>
-									<Layout style={styles.feature}>
-										<MaterialCommunityIcons
-											color={'#fff'}
-											size={24}
-											name={`${
-												data.features.outdoorEntertainingArea
-													? 'check-circle'
-													: 'close-circle'
-											}`}
-										/>
-										<Text style={styles.featureText}>
-											Outdoor-Entertaining-Area
-										</Text>
+
+									<Layout style={styles.iconContainerSecondary}>
+										<Text style={styles.secondaryText}>Garage</Text>
+										<Layout style={styles.icon}>
+											<MaterialCommunityIcons
+												color={theme['color-primary-400']}
+												size={24}
+												name='garage'
+											/>
+											<Text style={styles.iconText}>{data.garage}</Text>
+										</Layout>
 									</Layout>
 								</Layout>
 							</Layout>
 
-							{props.agentByID ? (
-								<Layout style={styles.agentCard}>
-									<TouchableOpacity onPress={handleAgentProfileNavigation}>
-										<AgentCard item={props.agentByID} />
-									</TouchableOpacity>
-									<Layout style={styles.buttonContainer}>
-										<Button
-											onPress={handleAgentListingNavigation}
-											style={styles.button}>
-											My Listing
-										</Button>
-										<Button
-											onPress={handleContactNavigation}
-											style={styles.button}>
-											Contact
-										</Button>
+							<Layout style={styles.description}>
+								<Text style={[styles.heading, styles.secondaryHeading]}>
+									Description
+								</Text>
+								<Text style={styles.descriptionText}>
+									{data.propertyDescript}
+								</Text>
+							</Layout>
+
+							<Layout style={styles.featureContainer}>
+								<Text style={[styles.heading, styles.secondaryHeading]}>
+									Features
+								</Text>
+
+								<Layout style={styles.featuresContainerMain}>
+									<Layout style={styles.featureColumnOne}>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.airCondition
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Air Conditioning</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.balcony ? 'check-circle' : 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Balcony</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.builtInRobes
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Built-In-Robes</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.builtInWardrobes
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Built-In-Wardrobes</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.courtyard
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Courtyard</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.deck ? 'check-circle' : 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Deck</Text>
+										</Layout>
+									</Layout>
+
+									<Layout style={[styles.featureColumnOne, styles.marginLeft]}>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.dishWasher
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Dishwasher</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.floorboards
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Floorboards</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.fullyFenced
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Fully Fenced</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.garden ? 'check-circle' : 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>Garden</Text>
+										</Layout>
+										<Layout style={styles.feature}>
+											<MaterialCommunityIcons
+												color={'#fff'}
+												size={24}
+												name={`${
+													data.features.outdoorEntertainingArea
+														? 'check-circle'
+														: 'close-circle'
+												}`}
+											/>
+											<Text style={styles.featureText}>
+												Outdoor-Entertaining-Area
+											</Text>
+										</Layout>
 									</Layout>
 								</Layout>
-							) : (
-								<Loader />
-							)}
+
+								{props.agentByID ? (
+									<Layout style={styles.agentCard}>
+										<TouchableOpacity onPress={handleAgentProfileNavigation}>
+											<AgentCard item={props.agentByID} />
+										</TouchableOpacity>
+										<Layout style={styles.buttonContainer}>
+											<Button
+												onPress={handleAgentListingNavigation}
+												style={styles.button}>
+												My Listing
+											</Button>
+											<Button
+												onPress={handleContactNavigation}
+												style={styles.button}>
+												Contact
+											</Button>
+										</Layout>
+									</Layout>
+								) : (
+									<Loader />
+								)}
+							</Layout>
 						</Layout>
 					</Layout>
-				</Layout>
-			</ScrollView>
-		</SafeAreaView>
+				</ScrollView>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -402,7 +418,6 @@ const styles = StyleSheet.create({
 	},
 
 	mainContainer: {
-		margin: 20,
 		backgroundColor: theme['color-primary-400'],
 		marginTop: 40,
 		borderRadius: 10,
@@ -437,7 +452,7 @@ const styles = StyleSheet.create({
 	},
 	sliderImage: {
 		height: 300,
-		width: 300,
+		width: 350,
 		margin: 4,
 	},
 	imageSlider: {},
@@ -560,6 +575,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: theme['color-primary-400'],
 		marginTop: 10,
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700'],
 	},
 });
 

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+
 import { Layout, Text } from '@ui-kitten/components';
 import { StyleSheet, FlatList, StatusBar, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
@@ -42,7 +44,12 @@ function FavPropertyScreen(props) {
 	}
 
 	if (!properties.length > 0) {
-		return <NotFound title='No Favourite Properties Found' />;
+		return (
+			<React.Fragment>
+				<NotFound title='No Favourite Properties Found' />
+				<ExpoStatusBar style='dark' />
+			</React.Fragment>
+		);
 	}
 
 	return (
@@ -64,6 +71,7 @@ function FavPropertyScreen(props) {
 				}}
 				keyExtractor={(item, index) => index.toString()}
 			/>
+			<ExpoStatusBar style='dark' />
 		</SafeAreaView>
 	);
 }

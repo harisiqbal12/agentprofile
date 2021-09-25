@@ -56,7 +56,7 @@ function HomeNavigation({
 		<Tab.Navigator
 			labeled={true}
 			activeColor={'#fff'}
-			barStyle={{ backgroundColor: theme['color-primary-400'] }}
+			barStyle={{ backgroundColor: theme['color-primary-500'] }}
 			initialRouteName='home'>
 			<Tab.Screen
 				component={Homescreen}

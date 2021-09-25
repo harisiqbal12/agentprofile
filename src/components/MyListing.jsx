@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Text } from '@ui-kitten/components';
-import { FlatList, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import {
+	FlatList,
+	StyleSheet,
+	SafeAreaView,
+	StatusBar,
+	View,
+} from 'react-native';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -47,30 +53,37 @@ function MyListing(props) {
 	}
 
 	if (!props.currentAgentProperties.length > 0) {
-		return <NotFound title='No Current Listing' />;
+		return (
+			<React.Fragment>
+				<NotFound title='No Current Listing' />
+				<ExpoStatusBar style='dark' />
+			</React.Fragment>
+		);
 	}
 
 	return (
-		<SafeAreaView style={styles.SafeAreaView}>
-			<Layout style={styles.titleContainer}>
-				<Text style={styles.title}>My Listings</Text>
-			</Layout>
-			<FlatList
-				refreshing={isRefreshing}
-				onRefresh={handleRefresh}
-				contentContainerStyle={{ padding: 16 }}
-				data={props.currentAgentProperties}
-				renderItem={({ item }) => {
-					return (
-						<PropertyCard
-							authenticatedUser={true}
-							navigation={props.navigation}
-							data={item}
-						/>
-					);
-				}}
-			/>
-		</SafeAreaView>
+		<View style={styles.root}>
+			<SafeAreaView style={styles.SafeAreaView}>
+				<Layout style={styles.titleContainer}>
+					<Text style={styles.title}>My Listings</Text>
+				</Layout>
+				<FlatList
+					refreshing={isRefreshing}
+					onRefresh={handleRefresh}
+					contentContainerStyle={{ padding: 16 }}
+					data={props.currentAgentProperties}
+					renderItem={({ item }) => {
+						return (
+							<PropertyCard
+								authenticatedUser={true}
+								navigation={props.navigation}
+								data={item}
+							/>
+						);
+					}}
+				/>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -86,7 +99,7 @@ const styles = StyleSheet.create({
 	title: {
 		textAlign: 'center',
 		fontSize: 25,
-		color: theme['color-info-800'],
+		color: theme['color-primary-200'],
 		fontWeight: 'bold',
 	},
 	errorContainer: {
@@ -99,6 +112,10 @@ const styles = StyleSheet.create({
 		backgroundColor: theme['color-danger-500'],
 		padding: 20,
 		borderRadius: 5,
+	},
+	root: {
+		backgroundColor: theme['color-primary-700'],
+		flex: 1,
 	},
 });
 

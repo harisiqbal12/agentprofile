@@ -38,7 +38,6 @@ function Homescreen(props) {
 		if (cancel) return;
 		if (currentAgent.length > 0) {
 			currentAgent.forEach((agent, index) => {
-				console.log(agent.id);
 				props.fetchAgentProperty(agent.id);
 			});
 
@@ -82,31 +81,34 @@ function Homescreen(props) {
 
 	return (
 		<Provider>
-			<SafeAreaView style={styles.homeContainer}>
-				<Layout style={styles.titleContainer}>
-					<Text style={styles.headerTitle}>Agent Profiles</Text>
-				</Layout>
+			<View style={styles.root}>
+				<SafeAreaView style={styles.homeContainer}>
+					<Layout style={styles.titleContainer}>
+						<Text style={styles.headerTitle}>Agent Profiles</Text>
+					</Layout>
 
-				<FlatList
-					refreshing={isRefreshing}
-					onRefresh={handleRefresh}
-					data={currentAgent}
-					renderItem={({ item }) => {
-						return (
-							// <TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
-							<HomescreenCard
-								navigation={props.navigation}
-								agentProperty={props.agentProperty}
-								item={item}
-								executeAgain={executeAgain}
-								// agentsFaveIds={fetchFaveAgents}
-							/>
-							// </TouchableOpacity>
-						);
-					}}
-					keyExtractor={item => item.id}
-				/>
-			</SafeAreaView>
+					<FlatList
+						refreshing={isRefreshing}
+						onRefresh={handleRefresh}
+						data={currentAgent}
+						renderItem={({ item }) => {
+							return (
+								// <TouchableOpacity onPress={() => handleAgentDetailsNavigation(item)}>
+								<HomescreenCard
+									navigation={props.navigation}
+									agentProperty={props.agentProperty}
+									item={item}
+									executeAgain={executeAgain}
+									// agentsFaveIds={fetchFaveAgents}
+								/>
+								// </TouchableOpacity>
+							);
+						}}
+						keyExtractor={item => item.id}
+					/>
+				</SafeAreaView>
+			</View>
+
 			{featuredAgent ? (
 				<Portal>
 					<Modal
@@ -150,6 +152,7 @@ function Homescreen(props) {
 const styles = StyleSheet.create({
 	homeContainer: {
 		flex: 1,
+		backgroundColor: theme['color-primary-700'],
 		marginTop: StatusBar.currentHeight,
 	},
 	titleContainer: {
@@ -158,12 +161,12 @@ const styles = StyleSheet.create({
 		flex: 0.1,
 		justifyContent: 'center',
 		marginBottom: 30,
-		marginTop: 25,
+		marginTop: 20,
 	},
 	headerTitle: {
 		fontSize: 25,
 		fontWeight: 'bold',
-		color: '#8F9BB3',
+		color: theme['color-primary-100'],
 		fontFamily: 'Roboto_400Regular',
 	},
 	flatList: {
@@ -206,6 +209,10 @@ const styles = StyleSheet.create({
 		width: 120,
 		height: 120,
 		marginBottom: 10,
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700']
 	},
 });
 

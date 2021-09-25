@@ -211,7 +211,6 @@ export function fetchFavPropertiesFromDatabase(data) {
 	return async dispatch => {
 		try {
 			const properitesRef = firebase.database().ref('properties');
-			console.log('action');
 			// console.log('fetch properties from database')
 			data.forEach(item => {
 				properitesRef
@@ -222,7 +221,6 @@ export function fetchFavPropertiesFromDatabase(data) {
 						const values = snapshot.val();
 						values['id'] = snapshot.key;
 						favPropertiesFromDatabase.push(values);
-						console.log(values);
 
 						dispatch({
 							type: PROPERTY_FAV_FROM_DATABASE,

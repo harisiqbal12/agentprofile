@@ -5,6 +5,7 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	FlatList,
+	View,
 } from 'react-native';
 import { Layout, Text } from '@ui-kitten/components';
 import { connect } from 'react-redux';
@@ -13,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import { fetchAgentProperites } from '../redux/actions';
 import Loader from './Loader';
 import PropertyCard from './PropertyCard';
-import NotFound from './Notfound'
+import NotFound from './Notfound';
 
 import { default as theme } from '../theme/custom-theme.json';
 
@@ -53,31 +54,26 @@ function ListingProperties(props) {
 	}
 
 	if (!props.agentProperties.length > 0) {
-		return (
-		<NotFound title='No Listing Properties Found' />
-		);
+		return <NotFound title='No Listing Properties Found' />;
 	}
 
 	return (
-		<SafeAreaView style={styles.SafeAreaView}>
-			<Layout style={styles.titleContainer}>
-				<Text style={styles.title}>{displayName} Properties</Text>
-			</Layout>
-			<FlatList
-				refreshing={isRefreshing}
-				onRefresh={handleRefreshing}
-				contentContainerStyle={{ padding: 16 }}
-				data={props.agentProperties}
-				renderItem={({ item }) => {
-					return (
-						<Layout>
-							<PropertyCard navigation={props.navigation} data={item} />
-						</Layout>
-					);
-				}}
-				keyExtractor={item => item.id}
-			/>
-		</SafeAreaView>
+		<View style={styles.root}>
+			<SafeAreaView style={styles.SafeAreaView}>
+				<Layout style={styles.titleContainer}>
+					<Text style={styles.title}>{displayName} Properties</Text>
+				</Layout>
+				<FlatList
+					refreshing={isRefreshing}
+					onRefresh={handleRefreshing}
+					data={props.agentProperties}
+					renderItem={({ item }) => {
+						return <PropertyCard navigation={props.navigation} data={item} />;
+					}}
+					keyExtractor={item => item.id}
+				/>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -93,7 +89,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontWeight: 'bold',
-		color: theme['color-info-800'],
+		color: theme['color-primary-100'],
 		fontSize: 25,
 		textAlign: 'center',
 	},
@@ -107,6 +103,10 @@ const styles = StyleSheet.create({
 		backgroundColor: theme['color-danger-500'],
 		padding: 20,
 		borderRadius: 5,
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700'],
 	},
 });
 

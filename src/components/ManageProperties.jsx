@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, StatusBar, FlatList } from 'react-native';
+import {
+	SafeAreaView,
+	StyleSheet,
+	StatusBar,
+	FlatList,
+	View,
+} from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { connect } from 'react-redux';
 import find from 'array-find';
@@ -59,34 +65,36 @@ function ManageProperties(props) {
 	}
 
 	return (
-		<SafeAreaView style={styles.safeAreaView}>
-			<Searchbar
-				theme={{ colors: { primary: '#fff' } }}
-				style={styles.searchBar}
-				placeholder='search properties'
-				onChangeText={handleSearch}
-				inputStyle={{ color: '#fff' }}
-				placeholderTextColor='#fff'
-				iconColor='#fff'
-			/>
-			<FlatList
-				refreshing={isRefreshing}
-				onRefresh={handleRefresh}
-				contentContainerStyle={{ padding: 5 }}
-				data={searchCompleted ? searchResult : currentProperties}
-				renderItem={({ item }) => {
-					return (
-						<PropertyCard
-							adminPrevelage={true}
-							favProperties={favProperties}
-							navigation={props.navigation}
-							data={item}
-						/>
-					);
-				}}
-				keyExtractor={(item, index) => index.toString()}
-			/>
-		</SafeAreaView>
+		<View style={styles.root}>
+			<SafeAreaView style={styles.safeAreaView}>
+				<Searchbar
+					theme={{ colors: { primary: '#fff' } }}
+					style={styles.searchBar}
+					placeholder='search properties'
+					onChangeText={handleSearch}
+					inputStyle={{ color: '#fff' }}
+					placeholderTextColor='#fff'
+					iconColor='#fff'
+				/>
+				<FlatList
+					refreshing={isRefreshing}
+					onRefresh={handleRefresh}
+					contentContainerStyle={{ padding: 5 }}
+					data={searchCompleted ? searchResult : currentProperties}
+					renderItem={({ item }) => {
+						return (
+							<PropertyCard
+								adminPrevelage={true}
+								favProperties={favProperties}
+								navigation={props.navigation}
+								data={item}
+							/>
+						);
+					}}
+					keyExtractor={(item, index) => index.toString()}
+				/>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -99,6 +107,10 @@ const styles = StyleSheet.create({
 		margin: 16,
 		backgroundColor: theme['color-primary-400'],
 		color: '#fff',
+	},
+	root: {
+		backgroundColor: theme['color-primary-700'],
+		flex: 1,
 	},
 });
 

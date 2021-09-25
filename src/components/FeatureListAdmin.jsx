@@ -6,6 +6,7 @@ import {
 	StatusBar,
 	FlatList,
 	TouchableOpacity,
+	View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -87,64 +88,66 @@ function Agents(props) {
 	}
 
 	return (
-		<SafeAreaView style={styles.agentContainer}>
-			<Provider>
-				<Searchbar
-					theme={{ colors: { primary: '#fff' } }}
-					style={styles.searchBar}
-					placeholder='search agent'
-					onChangeText={search}
-					inputStyle={{ color: '#fff' }}
-					placeholderTextColor='#fff'
-					iconColor='#fff'
-				/>
-				<FlatList
-					refreshing={isRefreshing}
-					onRefresh={handelRefresh}
-					style={styles.flatList}
-					data={searchCompleted ? searchData : currentAgent}
-					renderItem={({ item }) => {
-						return (
-							<TouchableOpacity
-								onPress={() => handleListingPropertiessNavigaiton(item)}>
-								<AgentCard
-									navigation={props.navigation}
-									adminPrevelage={true}
-									item={item}
+		<View style={styles.root}>
+			<SafeAreaView style={styles.agentContainer}>
+				<Provider>
+					<Searchbar
+						theme={{ colors: { primary: '#fff' } }}
+						style={styles.searchBar}
+						placeholder='search agent'
+						onChangeText={search}
+						inputStyle={{ color: '#fff' }}
+						placeholderTextColor='#fff'
+						iconColor='#fff'
+					/>
+					<FlatList
+						refreshing={isRefreshing}
+						onRefresh={handelRefresh}
+						style={styles.flatList}
+						data={searchCompleted ? searchData : currentAgent}
+						renderItem={({ item }) => {
+							return (
+								<TouchableOpacity
+									onPress={() => handleListingPropertiessNavigaiton(item)}>
+									<AgentCard
+										navigation={props.navigation}
+										adminPrevelage={true}
+										item={item}
+									/>
+								</TouchableOpacity>
+							);
+						}}
+						keyExtractor={item => item.id}
+					/>
+					<Portal>
+						<Modal
+							visible={showModal}
+							onDismiss={hideModal}
+							contentContainerStyle={styles.modal}>
+							<Layout style={styles.modalContainer}>
+								<Icon
+									style={styles.icon}
+									name='checkmark-circle-2-outline'
+									fill={theme['color-success-200']}
 								/>
-							</TouchableOpacity>
-						);
-					}}
-					keyExtractor={item => item.id}
-				/>
-				<Portal>
-					<Modal
-						visible={showModal}
-						onDismiss={hideModal}
-						contentContainerStyle={styles.modal}>
-						<Layout style={styles.modalContainer}>
-							<Icon
-								style={styles.icon}
-								name='checkmark-circle-2-outline'
-								fill={theme['color-success-200']}
-							/>
 
-							<Text style={styles.textModal}>{modalMessage}</Text>
-							{/* <Text style={styles.textModal}>{email}</Text> */}
-							<Layout style={styles.modalButtonContainer}>
-								<Button
-									status='primary'
-									appearance='outline'
-									onPress={hideModal}
-									style={styles.modalButton}>
-									Ok
-								</Button>
+								<Text style={styles.textModal}>{modalMessage}</Text>
+								{/* <Text style={styles.textModal}>{email}</Text> */}
+								<Layout style={styles.modalButtonContainer}>
+									<Button
+										status='primary'
+										appearance='outline'
+										onPress={hideModal}
+										style={styles.modalButton}>
+										Ok
+									</Button>
+								</Layout>
 							</Layout>
-						</Layout>
-					</Modal>
-				</Portal>
-			</Provider>
-		</SafeAreaView>
+						</Modal>
+					</Portal>
+				</Provider>
+			</SafeAreaView>
+		</View>
 	);
 }
 
@@ -193,6 +196,10 @@ const styles = StyleSheet.create({
 		color: theme['color-primary-500'],
 		fontWeight: 'bold',
 		fontSize: 12,
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-700']
 	},
 });
 

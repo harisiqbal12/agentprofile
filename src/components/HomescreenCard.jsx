@@ -45,7 +45,6 @@ function HomescreenCard(props) {
 
 	useEffect(() => {
 		let count = 0;
-		console.log('agent property \n\n\n\n');
 		if (props.agentProperty) {
 			props.agentProperty.forEach((property, index) => {
 				if (property.authorID === id) {

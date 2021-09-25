@@ -7,8 +7,10 @@ import {
 	Icon,
 	Spinner,
 } from '@ui-kitten/components';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import firebase from 'firebase';
+
+import { default as theme } from '../theme/custom-theme.json';
 
 import SpinnerSmall from './spinnerSmall';
 
@@ -95,48 +97,54 @@ function Register() {
 	);
 
 	return (
-		<Layout style={styles.registerContainer}>
-			<Layout style={styles.titleContainer}>
-				<Icon style={styles.icon} fill='#8F9BB3' name='people' />
-				<Text style={styles.title}>Signup</Text>
+		<View style={styles.root}>
+			<Layout style={styles.registerContainer}>
+				<Layout style={styles.titleContainer}>
+					<Icon
+						style={styles.icon}
+						fill={theme['color-primary-100']}
+						name='people'
+					/>
+					<Text style={styles.title}>Signup</Text>
+				</Layout>
+				<Layout style={styles.buttonConatiner}>
+					<Input
+						status={isNameError && 'danger'}
+						label={nameError}
+						value={name}
+						onChangeText={t => setName(t)}
+						size='large'
+						style={styles.input}
+						placeholder='Name'
+						accessoryLeft={() => inputIcon('at')}
+					/>
+					<Input
+						status={isEmailError && 'danger'}
+						label={emailError}
+						value={email}
+						onChangeText={t => setEmail(t)}
+						size='large'
+						style={styles.input}
+						placeholder='Email'
+						accessoryLeft={() => inputIcon('email')}
+					/>
+					<Input
+						status={isPasswordError && 'danger'}
+						label={passwordError}
+						secureTextEntry
+						size='large'
+						style={styles.input}
+						placeholder='Password'
+						value={password}
+						onChangeText={t => setPassword(t)}
+						accessoryLeft={() => inputIcon('lock')}
+					/>
+					<Button accessoryLeft={loading && SpinnerSmall} onPress={onSignup}>
+						{!loading && 'signup'}
+					</Button>
+				</Layout>
 			</Layout>
-			<Layout style={styles.buttonConatiner}>
-				<Input
-					status={isNameError && 'danger'}
-					label={nameError}
-					value={name}
-					onChangeText={t => setName(t)}
-					size='large'
-					style={styles.input}
-					placeholder='Name'
-					accessoryLeft={() => inputIcon('at')}
-				/>
-				<Input
-					status={isEmailError && 'danger'}
-					label={emailError}
-					value={email}
-					onChangeText={t => setEmail(t)}
-					size='large'
-					style={styles.input}
-					placeholder='Email'
-					accessoryLeft={() => inputIcon('email')}
-				/>
-				<Input
-					status={isPasswordError && 'danger'}
-					label={passwordError}
-					secureTextEntry
-					size='large'
-					style={styles.input}
-					placeholder='Password'
-					value={password}
-					onChangeText={t => setPassword(t)}
-					accessoryLeft={() => inputIcon('lock')}
-				/>
-				<Button accessoryLeft={loading && SpinnerSmall} onPress={onSignup}>
-					{!loading && 'signup'}
-				</Button>
-			</Layout>
-		</Layout>
+		</View>
 	);
 }
 
@@ -145,17 +153,21 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: 'transparent',
 	},
 	titleContainer: {
 		flex: 0.25,
 		justifyContent: 'center',
+		backgroundColor: 'transparent',
 	},
 	buttonConatiner: {
 		flex: 0.4,
+		backgroundColor: 'transparent',
 	},
 	input: {
 		width: 300,
 		marginBottom: 10,
+		backgroundColor: theme['color-primary-100'],
 	},
 	icon: {
 		height: 100,
@@ -164,13 +176,17 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
-		color: '#8F9BB3',
+		color: theme['color-primary-100'],
 		fontFamily: 'Roboto_400Regular',
 		textAlign: 'center',
 	},
 	inputIcon: {
 		width: 20,
 		height: 20,
+	},
+	root: {
+		flex: 1,
+		backgroundColor: theme['color-primary-400'],
 	},
 });
 
